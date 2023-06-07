@@ -1,6 +1,4 @@
-import 'dart:ui';
-
-import 'package:basicpos_v2/pages/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:basicpos_v2/pages/master/barang.dart';
 import 'package:basicpos_v2/pages/master/brand.dart';
 import 'package:basicpos_v2/pages/master/ekspedisi.dart';
@@ -285,12 +283,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                 ),
                               );
                             } else if (search[index].getTitle() == "Logout") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => LoginPage(),
-                                ),
-                              );
+                              FirebaseAuth.instance.signOut();
                             }
                           },
                           child: Row(
@@ -298,12 +291,8 @@ class _MainMenuPageState extends State<MainMenuPage> {
                               CircleAvatar(
                                 child: Image.asset(search[index].getImage()),
                                 radius: 15,
-                                backgroundColor: Color.fromARGB(
-                                  255,
-                                  239,
-                                  248,
-                                  255,
-                                ),
+                                backgroundColor:
+                                    Color.fromARGB(255, 239, 248, 255),
                               ),
                               SizedBox(width: 10),
                               Container(

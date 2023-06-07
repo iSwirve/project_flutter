@@ -47,6 +47,9 @@ dependencies:
   backdrop: ^0.8.1
   dropdown_formfield: ^0.1.4
   dropdown_textfield: ^1.0.7
+  firebase_core: ^2.13.1
+  firebase_auth: ^4.6.2
+
 
 dev_dependencies:
   flutter_test:

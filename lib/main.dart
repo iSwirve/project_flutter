@@ -1,21 +1,19 @@
-import 'package:basicpos_v2/pages/master/pelanggan_cru.dart';
-import 'package:basicpos_v2/pages/master/supplier.dart';
 import 'package:basicpos_v2/pages/login.dart';
 import 'package:basicpos_v2/pages/main_menu.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'constants/dimens.dart' as dimens;
 import 'constants/colors.dart' as colors;
+import 'package:firebase_auth/firebase_auth.dart';
 
-Widget initialPage = LoginPage();
-
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+  await Firebase.initializeApp();
+
   runApp(
     const ProviderScope(
       child: MyApp(),
@@ -30,7 +28,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Jaring Sales',
-      // initialRoute: '/',
       routes: {
         LoginPage.routeName: (context) => LoginPage(),
         MainMenuPage.routeName: (context) => MainMenuPage(),
@@ -103,13 +100,35 @@ class MyApp extends StatelessWidget {
         bottomSheetTheme: const BottomSheetThemeData(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(dimens.bottomSheetBorderRadius),
-                topRight: Radius.circular(dimens.bottomSheetBorderRadius)),
+              topLeft: Radius.circular(dimens.bottomSheetBorderRadius),
+              topRight: Radius.circular(dimens.bottomSheetBorderRadius),
+            ),
           ),
         ),
       ),
-      home: initialPage,
-      // initialRoute: '/login',
+      home: Auth(),
+    );
+  }
+}
+
+class Auth extends StatelessWidget {
+  const Auth({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Somewthing went Error'));
+        } else if (snapshot.hasData) {
+          return const MainMenuPage();
+        } else {
+          return const LoginPage();
+        }
+      },
     );
   }
 }

@@ -1,8 +1,7 @@
-import 'dart:convert';
-
 import 'package:basicpos_v2/components/custom_button.dart';
-import 'package:basicpos_v2/pages/main_menu.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../constants/colors.dart' as colors;
 
 class LoginPage extends StatefulWidget {
@@ -22,11 +21,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          padding: const EdgeInsets.only(
-            top: 180,
-            left: 16,
-            right: 16,
-          ),
+          padding: const EdgeInsets.only(top: 180, left: 16, right: 16),
           decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage(
@@ -75,29 +70,34 @@ class _LoginPageState extends State<LoginPage> {
                   textAlign: TextAlign.left,
                   style: TextStyle(fontSize: 16),
                   decoration: InputDecoration(
-                      contentPadding: EdgeInsets.all(13.0),
-                      border: InputBorder.none,
-                      fillColor: Colors.white,
-                      hintText: 'Password'),
+                    contentPadding: EdgeInsets.all(13.0),
+                    border: InputBorder.none,
+                    fillColor: Colors.white,
+                    hintText: 'Password',
+                  ),
                 ),
               ),
               const SizedBox(height: 15),
               //login
               CustomButton(
                 text: "Login",
-                onPressed: () async {
-                  if (mounted) {
-                    var menu = await Navigator.pushNamed(
-                      context,
-                      MainMenuPage.routeName,
-                    );
-                  }
-                },
+                onPressed: signIn,
               )
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future signIn() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: usernameController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+    } on FirebaseAuthException catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+    }
   }
 }
