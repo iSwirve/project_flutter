@@ -4,7 +4,7 @@ import '../../components/custom_text_field.dart';
 import '../../constants/dimens.dart' as dimens;
 import '../../components/custom_button.dart';
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 class supplier_cru extends StatefulWidget {
   final edit;
   int? index;
@@ -24,7 +24,9 @@ class _supplier_cruState extends State<supplier_cru> {
   var title = "Tambah";
 
   getdata() async {}
+  addData() async{
 
+  }
   @override
   void initState() {
     super.initState();
@@ -122,12 +124,15 @@ class _supplier_cruState extends State<supplier_cru> {
               text: title,
               onPressed: () async {
                 Map<String, String> body = {
-                  "code": kode.text.toString(),
-                  "name": nama.text.toString(),
-                  "address": alamat.text.toString(),
-                  "phone": telpon.text.toString(),
+                  "kode": kode.text.toString(),
+                  "nama_supplier": nama.text.toString(),
+                  "alamat": alamat.text.toString(),
+                  "telpon": telpon.text.toString(),
+
                 };
                 if (title == "Tambah") {
+                  //function
+                  FirebaseFirestore.instance.collection('Supplier').add(body);
                   Fluttertoast.showToast(msg: "Success Insert");
                 } else {
                   Fluttertoast.showToast(msg: "Success Update");

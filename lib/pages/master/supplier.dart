@@ -4,6 +4,7 @@ import 'package:basicpos_v2/pages/master/supplier_cru.dart';
 import 'package:basicpos_v2/pages/master/supplier_detail.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class supplier extends StatefulWidget {
   const supplier({super.key});
@@ -15,17 +16,24 @@ class supplier extends StatefulWidget {
 
 class _supplierState extends State<supplier> {
   var count = 0;
-
+  CollectionReference _collectionRef =
+  FirebaseFirestore.instance.collection('Supplier');
   getdata() async {
     // var response = await ApiHelper.get(url.supplier, auth: true);
     // count=1;
     // return response["data"];
+    QuerySnapshot querySnapshot = await _collectionRef.get();
+
+    // Get data from docs and convert map to List
+    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+
+    return allData;
   }
 
   @override
   void initState() {
     super.initState();
-    getdata();
+    // getdata();
   }
 
   @override
@@ -98,9 +106,9 @@ class _supplierState extends State<supplier> {
                           shrinkWrap: true,
                           itemCount: snapshot.data.length,
                           itemBuilder: (BuildContext context, int index) {
-                            var name = snapshot.data[index]["name"].toString();
+                            var name = snapshot.data[index]["nama_supplier"].toString();
                             var id = int.parse(
-                                snapshot.data[index]["id"].toString());
+                                snapshot.data[index]["kode"].toString());
                             var ava = name.toString().substring(0, 1);
                             return GestureDetector(
                                 onTap: () async {
