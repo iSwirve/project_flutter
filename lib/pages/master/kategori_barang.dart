@@ -2,6 +2,7 @@ import 'package:basicpos_v2/pages/main_menu.dart';
 import 'package:basicpos_v2/pages/master/kategori_barang_cru.dart';
 import 'package:basicpos_v2/pages/master/kategori_barang_detail.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class kategori_barang extends StatefulWidget {
@@ -13,8 +14,16 @@ class kategori_barang extends StatefulWidget {
 
 class _kategoribarangState extends State<kategori_barang> {
   var count = 0;
+  CollectionReference _collectionRef = FirebaseFirestore.instance.collection('Kategori');
   getdata() async {
+    QuerySnapshot querySnapshot = await _collectionRef.get();
 
+    // Get data from docs and convert map to List
+    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+    print(allData);
+    print(querySnapshot.docs[0].id);
+
+    return allData;
   }
 
   @override
@@ -104,9 +113,9 @@ class _kategoribarangState extends State<kategori_barang> {
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
                           var name = snapshot.data[index]["name"].toString();
-                          var id = int.parse(
-                            snapshot.data[index]["id"].toString(),
-                          );
+                          // var id = int.parse(
+                          //   snapshot.data[index]["id"].toString(),
+                          // );
                           var ava = name.toString().substring(0, 1);
                           return GestureDetector(
                             onTap: () async {
@@ -114,7 +123,7 @@ class _kategoribarangState extends State<kategori_barang> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      kategori_barang_detail(index: id),
+                                      kategori_barang_detail(index: count),
                                 ),
                               );
                             },

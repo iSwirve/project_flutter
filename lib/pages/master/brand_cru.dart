@@ -7,10 +7,12 @@ import '../../components/custom_text_field.dart';
 import '../../constants/dimens.dart' as dimens;
 import '../../components/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class brand_cru extends StatefulWidget {
   final edit;
   int? index;
+
   brand_cru({super.key, this.edit, this.index});
 
   static const routeName = '/brand_cru';
@@ -107,8 +109,16 @@ class _brand_cruState extends State<brand_cru> {
                 Map<String, String> body = {
                   "name": nama.text.toString(),
                 };
+
                 if (title == "Tambah") {
-                  Fluttertoast.showToast(msg: "Success Tambah");
+                  if (nama.text.toString()?.isNotEmpty ?? true) {
+                    FirebaseFirestore.instance.collection('Brand').add(body);
+
+                    Fluttertoast.showToast(msg: "Success Tambah");
+                  }
+                  else{
+                    Fluttertoast.showToast(msg: "Field tidak boleh kosong");
+                  }
                 } else {
                   Fluttertoast.showToast(msg: "Success Update");
                 }

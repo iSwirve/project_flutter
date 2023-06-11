@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class brand_detail extends StatefulWidget {
   final index;
@@ -111,7 +112,7 @@ class _brandState extends State<brand_detail> {
   }
 
   getdata() async {
-
+    FirebaseFirestore.instance.collection('Supplier');
   }
 
   @override

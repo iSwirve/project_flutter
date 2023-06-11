@@ -8,10 +8,12 @@ import '../../components/custom_text_field.dart';
 import '../../constants/dimens.dart' as dimens;
 import '../../components/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class kategori_barang_cru extends StatefulWidget {
   final edit;
   int? index;
+
   kategori_barang_cru({super.key, this.edit, this.index});
 
   static const routeName = '/kategori_barang_cru';
@@ -29,10 +31,7 @@ class _kategori_barang_cruState extends State<kategori_barang_cru> {
 
   getdata() async {
     try {
-
-      if (title == "Edit") {
-
-      }
+      if (title == "Edit") {}
     } catch (e) {
       return [];
     }
@@ -127,21 +126,27 @@ class _kategori_barang_cruState extends State<kategori_barang_cru> {
             CustomButton(
               text: title,
               onPressed: () async {
-                Map<dynamic, dynamic> body;
-                try {
-                  body = {
-                    'parent_id': int.parse(
-                      subkategori!.dropDownValue!.value.toString(),
-                    ),
-                  };
-                } catch (e) {
-                  print(e.toString());
-                }
+                Map<String, String> body;
+                // try {
+                //   body = {
+                //     'parent_id': int.parse(
+                //       subkategori!.dropDownValue!.value.toString(),
+                //     ),
+                //   };
+                // } catch (e) {
+                //   print(e.toString());
+                // }
 
                 body = {
-                  'name': nama.text.toString(),
+                  "name": nama.text.toString(),
                 };
                 if (title == "Tambah") {
+                  if (nama.text.toString().isNotEmpty) {
+                    FirebaseFirestore.instance.collection('Kategori').add(body);
+                  } else{
+                    Fluttertoast.showToast(msg: "Field tidak boleh kosong");
+                  }
+
                   Fluttertoast.showToast(msg: "Success Insert");
                 } else {
                   Fluttertoast.showToast(msg: "Success Update");

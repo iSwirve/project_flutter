@@ -2,6 +2,7 @@ import 'package:basicpos_v2/components/custom_dropdown.dart';
 import 'package:basicpos_v2/pages/master/barang.dart';
 import 'package:basicpos_v2/pages/master/pelanggan.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../components/custom_text_field.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/material.dart';
 class barang_cru extends StatefulWidget {
   final edit;
   int? index;
+
   barang_cru({super.key, this.edit, this.index});
 
   static const routeName = '/barang';
@@ -37,28 +39,64 @@ class _barang_cruState extends State<barang_cru> {
   TextEditingController keterangan = TextEditingController();
   Map<dynamic, dynamic> BrandData = {};
   Map<dynamic, dynamic> KategoriData = {};
+  var listBrand = [];
   var title = "Tambah";
 
+  // getdata() async {
+  // try {
+  //   BrandData.clear();
+  //   KategoriData.clear();
+
+  //   dynbrand["data"].forEach((element) {
+  //     BrandData[element["id"]] = '${element["name"]}';
+  //   });
+  //   dynkategori["data"].forEach((element) {
+  //     KategoriData[element["id"]] = '${element["name"]}';
+  //   });
+
+  //   if (title == "Edit") {
+  //     var id = widget.index;
+  //     var response = await ApiHelper.get(url.barang + '/$id');
+  //     return response["data"];
+  //   }
+  // } catch (e) {
+  //   return [];
+  // }
+  // }
+
+  CollectionReference _collectionRef =
+      FirebaseFirestore.instance.collection('Brand');
+  CollectionReference _collectionRef2 =
+  FirebaseFirestore.instance.collection('Kategori');
+
   getdata() async {
-    // try {
-    //   BrandData.clear();
-    //   KategoriData.clear();
+    QuerySnapshot querySnapshot = await _collectionRef.get();
+    QuerySnapshot querySnapshot2 = await _collectionRef2.get();
 
-    //   dynbrand["data"].forEach((element) {
-    //     BrandData[element["id"]] = '${element["name"]}';
-    //   });
-    //   dynkategori["data"].forEach((element) {
-    //     KategoriData[element["id"]] = '${element["name"]}';
-    //   });
+    // Get data from docs and convert map to List
+    // print(querySnapshot.docs[0].toString());
+    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+    // print(allData);
+    // print(querySnapshot.docs[0].id);
+    var ctr = 0;
+    print(querySnapshot.docs[0]["name"]);
 
-    //   if (title == "Edit") {
-    //     var id = widget.index;
-    //     var response = await ApiHelper.get(url.barang + '/$id');
-    //     return response["data"];
-    //   }
-    // } catch (e) {
-    //   return [];
-    // }
+    querySnapshot.docs.forEach((element) {
+
+      BrandData[element.id] = querySnapshot.docs[ctr]["name"].toString();
+      ctr++;
+    });
+ctr = 0;
+    querySnapshot2.docs.forEach((element) {
+
+      KategoriData[element.id] = querySnapshot2.docs[ctr]["name"].toString();
+      ctr++;
+    });
+    // Map<String, dynamic>.from(querySnapshot.value as Map);
+    // print(allData[0].runtimeType);
+
+
+    return allData;
   }
 
   @override

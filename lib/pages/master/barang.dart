@@ -2,6 +2,7 @@ import 'package:basicpos_v2/components/custom_text_field.dart';
 import 'package:basicpos_v2/pages/main_menu.dart';
 import 'package:basicpos_v2/pages/master/barang_cru.dart';
 import 'package:basicpos_v2/pages/master/barang_detail.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
 import '../../constants/dimens.dart' as dimens;
@@ -18,6 +19,7 @@ class _barangState extends State<barang> {
   var count = 0;
 
   getdata() async {
+
 
   }
 
