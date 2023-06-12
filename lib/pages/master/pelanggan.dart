@@ -3,6 +3,7 @@ import 'package:basicpos_v2/pages/master/pelanggan_cru.dart';
 import 'package:basicpos_v2/pages/master/pelanggan_detail.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class pelanggan extends StatefulWidget {
   const pelanggan({super.key});
@@ -12,8 +13,16 @@ class pelanggan extends StatefulWidget {
 }
 
 class _pelangganState extends State<pelanggan> {
+   var count = 0;
+  CollectionReference _collectionRef =
+  FirebaseFirestore.instance.collection('Pelanggan');
   getdata() async {
+    QuerySnapshot querySnapshot = await _collectionRef.get();
 
+    // Get data from docs and convert map to List
+    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+
+    return allData;
   }
 
   @override
@@ -79,11 +88,9 @@ class _pelangganState extends State<pelanggan> {
                 initialData: {},
                 future: getdata(), // Run check for a single queryRow
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                  if (!snapshot.hasData ||
-                      snapshot.data == null ||
-                      snapshot.data.isEmpty ||
-                      snapshot.hasError) {
-                    if (snapshot.data == {}) {
+                  if (!snapshot.hasData ||snapshot.data == null ||snapshot.data.isEmpty ||snapshot.hasError) {
+                    if (count > 0) {
+                      count = 0;
                       return Container();
                     } else {
                       return Container(
@@ -101,10 +108,8 @@ class _pelangganState extends State<pelanggan> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
-                          var name = snapshot.data[index]["name"].toString();
-                          var id = int.parse(
-                            snapshot.data[index]["id"].toString(),
-                          );
+                          var name = snapshot.data[index]["nama_depan"].toString()+" "+ snapshot.data[index]["nama_belakang"].toString();
+                          var id = snapshot.data[index]["id"];
                           var ava = name.toString().substring(0, 1);
                           return GestureDetector(
                             onTap: () async {

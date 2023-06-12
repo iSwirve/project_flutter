@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class pelanggan_detail extends StatefulWidget {
   final index;
