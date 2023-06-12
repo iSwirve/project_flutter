@@ -1,6 +1,7 @@
 import 'package:basicpos_v2/pages/master/barang.dart';
 import 'package:basicpos_v2/pages/master/barang_cru.dart';
 import 'package:basicpos_v2/pages/master/brand.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
@@ -15,6 +16,8 @@ class barang_detail extends StatefulWidget {
 }
 
 class _barang_detailState extends State<barang_detail> {
+  final CollectionReference _barang =
+      FirebaseFirestore.instance.collection('Barang');
   int count = 0;
   Future<void> _showMyDialog() async {
     return showDialog<void>(
@@ -115,7 +118,10 @@ class _barang_detailState extends State<barang_detail> {
 
   getdata() async {
     var id = widget.index;
-
+    QuerySnapshot querySnapshot = await _barang.where("nama_barang",isEqualTo: id).get();
+    final datas = querySnapshot.docs.map((doc) => doc.data()).toList();
+    print(id);
+    return datas;
   }
 
   @override
@@ -166,14 +172,22 @@ class _barang_detailState extends State<barang_detail> {
                   );
                 }
               } else {
-                var statuspkp = "tidak";
-                var brandtext = " - ";
-                if (snapshot.data["taxpayer"] == 1) statuspkp = "ya";
-                try {
-                  brandtext = snapshot.data["brand"]["name"];
-                } catch (e) {
-                  brandtext = " - ";
-                }
+                var nama_barang = snapshot.data[0]["nama_barang"].toString();
+                var brand = snapshot.data[0]["brand"].toString();
+                var kategori_barang = snapshot.data[0]["kategori_barang"].toString();
+                var kode_barang = snapshot.data[0]["kode_barang"].toString();
+                var nomor_seri = snapshot.data[0]["nomor_seri"].toString();
+                var harga_beli = snapshot.data[0]["harga_beli"].toString();
+                var harga_jual = snapshot.data[0]["harga_jual"].toString();
+                var stok_minimum = snapshot.data[0]["stok_minimum"].toString();
+                // var statuspkp = "tidak";
+                // var brandtext = " - ";
+                // if (snapshot.data["taxpayer"] == 1) statuspkp = "ya";
+                // try {
+                //   brandtext = snapshot.data["brand"]["name"];
+                // } catch (e) {
+                //   brandtext = " - ";
+                // }
                 return SingleChildScrollView(
                   child: Container(
                     margin: EdgeInsets.only(top: 10, left: 20),
@@ -182,7 +196,7 @@ class _barang_detailState extends State<barang_detail> {
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.only(top: 7),
                         child: Text(
-                          "Nama",
+                          nama_barang,
                           style: TextStyle(
                             fontSize: 12,
                           ),
@@ -193,7 +207,7 @@ class _barang_detailState extends State<barang_detail> {
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.only(top: 7),
                         child: Text(
-                          snapshot.data["name"] ?? " - ",
+                          brand,
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -205,7 +219,7 @@ class _barang_detailState extends State<barang_detail> {
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.only(top: 7),
                         child: Text(
-                          "brand",
+                          kategori_barang,
                           style: TextStyle(
                             fontSize: 12,
                           ),
@@ -216,7 +230,7 @@ class _barang_detailState extends State<barang_detail> {
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.only(top: 7),
                         child: Text(
-                          brandtext,
+                          kode_barang,
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -228,7 +242,7 @@ class _barang_detailState extends State<barang_detail> {
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.only(top: 7),
                         child: Text(
-                          "Kategori barang",
+                          nomor_seri,
                           style: TextStyle(
                             fontSize: 12,
                           ),
@@ -239,7 +253,7 @@ class _barang_detailState extends State<barang_detail> {
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.only(top: 7),
                         child: Text(
-                          (snapshot.data["product_category"] == null ? "-" : snapshot.data["product_category"]["name"]).toString(),
+                          harga_beli,
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -251,7 +265,7 @@ class _barang_detailState extends State<barang_detail> {
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.only(top: 7),
                         child: Text(
-                          "Kode",
+                          harga_jual,
                           style: TextStyle(
                             fontSize: 12,
                           ),
@@ -262,229 +276,7 @@ class _barang_detailState extends State<barang_detail> {
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.only(top: 7),
                         child: Text(
-                          snapshot.data["code"] ?? " - ",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          "Stok minimum",
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          snapshot.data["min_stock"].toString(),
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          "Satuan",
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          snapshot.data["unit"] ?? " - ",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          "Isi per karton",
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          snapshot.data["box_qty"].toString(),
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          "Satuan Karton",
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          snapshot.data["box_unit"] ?? " - ",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          "Harga Beli",
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          (snapshot.data["purchase_price"]).toString(),
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          "Harga Jual",
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          snapshot.data["sales_price"].toString(),
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text("Nomor Seri",
-                            style: TextStyle(
-                              fontSize: 12,
-                            )),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          " - ",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text("Tipe Mobil",
-                            style: TextStyle(
-                              fontSize: 12,
-                            )),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          " - ",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text("Kode Supplier",
-                            style: TextStyle(
-                              fontSize: 12,
-                            )),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          snapshot.data["supplier_code"] ?? " - ",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text("Keterangan",
-                            style: TextStyle(
-                              fontSize: 12,
-                            )),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          snapshot.data["notes"] ?? " - ",
+                          stok_minimum,
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,

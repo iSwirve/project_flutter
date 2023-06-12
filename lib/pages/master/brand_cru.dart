@@ -111,7 +111,7 @@ class _brand_cruState extends State<brand_cru> {
                 };
 
                 if (title == "Tambah") {
-                  if (nama.text.toString()?.isNotEmpty ?? true) {
+                  if (nama.text.toString().isNotEmpty ?? true) {
                     FirebaseFirestore.instance.collection('Brand').add(body);
 
                     Fluttertoast.showToast(msg: "Success Tambah");

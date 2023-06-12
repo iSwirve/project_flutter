@@ -17,10 +17,14 @@ class barang extends StatefulWidget {
 
 class _barangState extends State<barang> {
   var count = 0;
+  final CollectionReference _barang =
+      FirebaseFirestore.instance.collection('Barang');
 
   getdata() async {
+    QuerySnapshot querySnapshot = await _barang.get();
+    final data = querySnapshot.docs.map((doc) => doc.data()).toList();
 
-
+    return data;
   }
 
   @override
@@ -168,18 +172,16 @@ class _barangState extends State<barang> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
-                          var name = snapshot.data[index]["name"].toString();
-                          var id = int.parse(
-                            snapshot.data[index]["id"].toString(),
-                          );
-                          var ava = name.toString().substring(0, 1);
+                          var name = snapshot.data[index]["nama_barang"].toString();
+                          var id = snapshot.connectionState.index;
+                          print(id);
                           return GestureDetector(
                             onTap: () async {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      barang_detail(index: id),
+                                      barang_detail(index: name),
                                 ),
                               );
                             },
@@ -187,7 +189,7 @@ class _barangState extends State<barang> {
                               children: [
                                 CircleAvatar(
                                   child: Text(
-                                    ava,
+                                    name,
                                     style:
                                         TextStyle(fontWeight: FontWeight.w500),
                                   ),

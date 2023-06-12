@@ -119,7 +119,7 @@ class _brandState extends State<brand_detail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
+        elevation: 0, 
         title: const Text(
           "Detail brand",
           style: TextStyle(
