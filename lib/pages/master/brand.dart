@@ -18,8 +18,6 @@ class _brandState extends State<brand> {
   CollectionReference _collectionRef = FirebaseFirestore.instance.collection('Brand');
   getdata() async {
     QuerySnapshot querySnapshot = await _collectionRef.get();
-
-    // Get data from docs and convert map to List
     final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
     print(allData);
     print(querySnapshot.docs[0].id);
@@ -113,9 +111,9 @@ class _brandState extends State<brand> {
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
                         var name = snapshot.data[index]["name"].toString();
+                        var ava = name.toString().substring(0, 1).toUpperCase();
                         // var id = snapshot.data.;
                         print("hi " + name);
-                        var ava = name.toString()[0];
                         return GestureDetector(
                           onTap: () async {
                             Navigator.push(

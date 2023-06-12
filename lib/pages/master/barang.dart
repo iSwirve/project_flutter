@@ -5,6 +5,7 @@ import 'package:basicpos_v2/pages/master/barang_detail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../constants/dimens.dart' as dimens;
 import '../../constants/colors.dart' as colors;
 
@@ -23,9 +24,22 @@ class _barangState extends State<barang> {
   getdata() async {
     QuerySnapshot querySnapshot = await _barang.get();
     final data = querySnapshot.docs.map((doc) => doc.data()).toList();
-
     return data;
   }
+
+  getId(int index) async {
+    QuerySnapshot querySnapshot = await _barang.get();
+    return querySnapshot.docs[index].id;
+  }
+
+  // getdata() async {
+  //   QuerySnapshot querySnapshot = await _collectionRef.get();
+  //   final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+  //   print(allData);
+  //   print(querySnapshot.docs[0].id);
+
+  //   return allData;
+  // }
 
   @override
   void initState() {
@@ -35,7 +49,6 @@ class _barangState extends State<barang> {
 
   @override
   Widget build(BuildContext context) {
-    getdata();
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -172,16 +185,17 @@ class _barangState extends State<barang> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
-                          var name = snapshot.data[index]["nama_barang"].toString();
-                          var id = snapshot.connectionState.index;
-                          print(id);
+                          var name =
+                              snapshot.data[index]["nama_barang"].toString();
+                          var ava =
+                              name.toString().substring(0, 1).toUpperCase();
                           return GestureDetector(
                             onTap: () async {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      barang_detail(index: name),
+                                      barang_detail(index: index),
                                 ),
                               );
                             },
@@ -189,7 +203,7 @@ class _barangState extends State<barang> {
                               children: [
                                 CircleAvatar(
                                   child: Text(
-                                    name,
+                                    ava,
                                     style:
                                         TextStyle(fontWeight: FontWeight.w500),
                                   ),

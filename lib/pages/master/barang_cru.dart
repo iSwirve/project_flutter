@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 
 class barang_cru extends StatefulWidget {
   final edit;
-  int? index;
+  final index;
 
   barang_cru({super.key, this.edit, this.index});
 
@@ -39,64 +39,39 @@ class _barang_cruState extends State<barang_cru> {
   TextEditingController keterangan = TextEditingController();
   Map<dynamic, dynamic> BrandData = {};
   Map<dynamic, dynamic> KategoriData = {};
-  var listBrand = [];
   var title = "Tambah";
-
-  // getdata() async {
-  // try {
-  //   BrandData.clear();
-  //   KategoriData.clear();
-
-  //   dynbrand["data"].forEach((element) {
-  //     BrandData[element["id"]] = '${element["name"]}';
-  //   });
-  //   dynkategori["data"].forEach((element) {
-  //     KategoriData[element["id"]] = '${element["name"]}';
-  //   });
-
-  //   if (title == "Edit") {
-  //     var id = widget.index;
-  //     var response = await ApiHelper.get(url.barang + '/$id');
-  //     return response["data"];
-  //   }
-  // } catch (e) {
-  //   return [];
-  // }
-  // }
 
   CollectionReference _collectionRef =
       FirebaseFirestore.instance.collection('Brand');
   CollectionReference _collectionRef2 =
-  FirebaseFirestore.instance.collection('Kategori');
+      FirebaseFirestore.instance.collection('Kategori');
+  CollectionReference _collectionRef3 =
+      FirebaseFirestore.instance.collection('Barang');
 
   getdata() async {
     QuerySnapshot querySnapshot = await _collectionRef.get();
     QuerySnapshot querySnapshot2 = await _collectionRef2.get();
+    QuerySnapshot querySnapshot3 = await _collectionRef3.get();
 
-    // Get data from docs and convert map to List
-    // print(querySnapshot.docs[0].toString());
-    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
-    // print(allData);
-    // print(querySnapshot.docs[0].id);
+    final allData = querySnapshot3.docs.map((doc) => doc.data()).toList();
     var ctr = 0;
-    print(querySnapshot.docs[0]["name"]);
 
     querySnapshot.docs.forEach((element) {
-
       BrandData[element.id] = querySnapshot.docs[ctr]["name"].toString();
       ctr++;
     });
-ctr = 0;
+    ctr = 0;
     querySnapshot2.docs.forEach((element) {
-
       KategoriData[element.id] = querySnapshot2.docs[ctr]["name"].toString();
       ctr++;
     });
-    // Map<String, dynamic>.from(querySnapshot.value as Map);
-    // print(allData[0].runtimeType);
-
 
     return allData;
+  }
+
+  getId(int index) async {
+    QuerySnapshot querySnapshot = await _collectionRef3.get();
+    return querySnapshot.docs[index].id;
   }
 
   @override
@@ -161,22 +136,23 @@ ctr = 0;
                     }
                   } else {
                     if (title == "Edit") {
-                      nama.text = snapshot.data["name"] ?? '-';
-                      kode.text = snapshot.data["code"] ?? '-';
+                      nama.text =
+                          snapshot.data[widget.index]["nama_barang"] ?? '-';
+                      kode.text =
+                          snapshot.data[widget.index]["kode_barang"] ?? '-';
                       kode_supplier.text =
-                          snapshot.data["supplier_code"] ?? '-';
+                          snapshot.data[widget.index]["kode_supplier"] ?? '-';
                       stok_minimum.text =
-                          (snapshot.data["min_stock"] ?? 0).toString();
-                      satuan.text = snapshot.data["unit"] ?? "-";
-                      isi_per_karton.text =
-                          (snapshot.data["box_qty"] ?? 0).toString();
-                      print(isi_per_karton.toString());
-                      satuan_karton.text = snapshot.data["box_unit"] ?? "-";
+                          (snapshot.data[widget.index]["stok_minimum"] ?? 0)
+                              .toString();
                       harga_beli.text =
-                          (snapshot.data["purchase_price"] ?? 0).toString();
+                          (snapshot.data[widget.index]["harga_beli"] ?? 0)
+                              .toString();
                       harga_jual.text =
-                          (snapshot.data["sales_price"] ?? 0).toString();
-                      keterangan.text = snapshot.data["notes"] ?? "-";
+                          (snapshot.data[widget.index]["harga_jual"] ?? 0)
+                              .toString();
+                      keterangan.text =
+                          snapshot.data[widget.index]["keterangan"] ?? "-";
                     }
                   }
                   return SingleChildScrollView(
@@ -185,14 +161,14 @@ ctr = 0;
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomTextField(
-                            text_controller: nama,
-                            hintText: "Nama",
-                            title: "Nama",
-                          ),
-                          CustomTextField(
                             text_controller: kode,
                             hintText: "Kode",
                             title: "Kode",
+                          ),
+                          CustomTextField(
+                            text_controller: nama,
+                            hintText: "Nama",
+                            title: "Nama",
                           ),
                           CustomDropdown(
                             title: "Brand",
@@ -216,29 +192,19 @@ ctr = 0;
                             ),
                           ),
                           CustomTextField(
-                            text_controller: nomor_seri,
-                            hintText: "Nomor Seri",
-                            title: "Nomor Seri",
-                          ),
-                          CustomTextField(
-                            text_controller: tipe_mobil,
-                            hintText: "Tipe Mobil",
-                            title: "Tipe Mobil",
-                          ),
-                          CustomTextField(
                             text_controller: kode_supplier,
                             hintText: "Kode Supplier",
                             title: "Kode Supplier",
                           ),
                           CustomTextField(
+                            text_controller: nomor_seri,
+                            hintText: "Nomor Seri",
+                            title: "Nomor Seri",
+                          ),
+                          CustomTextField(
                             text_controller: stok_minimum,
                             hintText: "Stok Minimum",
                             title: "Stok Minimum",
-                          ),
-                          CustomTextField(
-                            text_controller: satuan,
-                            hintText: "Satuan",
-                            title: "Satuan",
                           ),
                           CustomTextField(
                             text_controller: harga_beli,
@@ -266,41 +232,31 @@ ctr = 0;
             CustomButton(
               text: title,
               onPressed: () async {
-                int boxqty = 0,
-                    purchase_price = 0,
-                    sales_price = 0,
-                    min_stok = 0;
-                try {
-                  boxqty = int.parse(isi_per_karton.text.toString());
-                  purchase_price = int.parse(harga_beli.text.toString());
-                  sales_price = int.parse(harga_jual.text.toString());
-                  min_stok = int.parse(stok_minimum.text.toString());
-                } catch (e) {
-                  print(e.toString());
-                }
-                Map<dynamic, dynamic>? body;
+                Map<String, String>? body;
                 body = {
-                  'brand_id': int.tryParse(
-                    brand!.dropDownValue!.value.toString(),
-                  ),
-                  'product_category_id': int.tryParse(
-                    kategori_barang!.dropDownValue!.value.toString(),
-                  ),
-                  'code': kode.text.toString(),
-                  'name': nama.text.toString(),
-                  'unit': satuan.text.toString(),
-                  'box_qty': boxqty,
-                  'box_unit': satuan_karton.text.toString(),
-                  'purchase_price': purchase_price,
-                  'sales_price': sales_price,
-                  'supplier_code': kode_supplier.text.toString(),
-                  'notes': keterangan.text.toString(),
-                  'min_stock': min_stok,
+                  'brand': brand!.dropDownValue!.value.toString(),
+                  'kategori_barang':
+                      kategori_barang!.dropDownValue!.value.toString(),
+                  'kode_barang': kode.text.toString(),
+                  'nama_barang': nama.text.toString(),
+                  'harga_beli': harga_beli.text.toString(),
+                  'harga_jual': harga_jual.text.toString(),
+                  'kode_supplier': kode_supplier.text.toString(),
+                  'keterangan': keterangan.text.toString(),
+                  'stok_minimum': stok_minimum.text.toString(),
                 };
 
                 if (title == "Tambah") {
-                  Fluttertoast.showToast(msg: "Sukses Insert");
+                  if (nama.text.isEmpty)
+                    Fluttertoast.showToast(
+                        msg: "Nama barang tidak boleh kosong");
+                  else {
+                    Fluttertoast.showToast(msg: "Sukses Insert");
+                    await _collectionRef3.add(body);
+                  }
                 } else {
+                  var id = await getId(widget.index);
+                  await _collectionRef3.doc(id).update(body);
                   Fluttertoast.showToast(msg: "Sukses update");
                 }
               },

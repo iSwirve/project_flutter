@@ -3,9 +3,12 @@ import 'package:basicpos_v2/pages/master/barang_cru.dart';
 import 'package:basicpos_v2/pages/master/brand.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
+import 'package:basicpos_v2/constants/colors.dart' as colors;
+import 'package:basicpos_v2/components/custom_text.dart';
 
 class barang_detail extends StatefulWidget {
   final index;
@@ -16,9 +19,12 @@ class barang_detail extends StatefulWidget {
 }
 
 class _barang_detailState extends State<barang_detail> {
-  final CollectionReference _barang =
-      FirebaseFirestore.instance.collection('Barang');
   int count = 0;
+
+  Future<void> _delete(String productId) async {
+    await _barang.doc(productId).delete();
+  }
+
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
@@ -69,8 +75,9 @@ class _barang_detailState extends State<barang_detail> {
                         child: const Text(
                           'Tidak',
                           style: TextStyle(
-                              color: Color.fromARGB(255, 24, 72, 169),
-                              fontWeight: FontWeight.w600),
+                            color: Color.fromARGB(255, 24, 72, 169),
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         onPressed: () => Navigator.pop(context),
                       ),
@@ -83,7 +90,7 @@ class _barang_detailState extends State<barang_detail> {
                       height: 36,
                       child: TextButton(
                         style: TextButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 24, 72, 169),
+                          backgroundColor: colors.primary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
@@ -96,7 +103,8 @@ class _barang_detailState extends State<barang_detail> {
                           ),
                         ),
                         onPressed: () async {
-                          var id = widget.index;
+                          var id = await getId(widget.index);
+                          _delete(id);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -116,13 +124,27 @@ class _barang_detailState extends State<barang_detail> {
     );
   }
 
+  final CollectionReference _barang =
+      FirebaseFirestore.instance.collection('Barang');
+
+  final CollectionReference _kategori =
+      FirebaseFirestore.instance.collection('Kategori');
+
   getdata() async {
-    var id = widget.index;
-    QuerySnapshot querySnapshot = await _barang.where("nama_barang",isEqualTo: id).get();
+    QuerySnapshot querySnapshot = await _barang.get();
     final datas = querySnapshot.docs.map((doc) => doc.data()).toList();
-    print(id);
+
     return datas;
   }
+
+  getId(int index) async {
+    QuerySnapshot querySnapshot = await _barang.get();
+    return querySnapshot.docs[index].id;
+  }
+
+  // Future<void> _delete(String productId) async {
+  //   await _barang.doc(productId).delete();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -148,148 +170,100 @@ class _barang_detailState extends State<barang_detail> {
         ),
         backgroundColor: Colors.white,
       ),
-      body: SafeArea(
-        left: true,
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: FutureBuilder<dynamic>(
-            initialData: [],
-            future: getdata(),
-            builder: (context, AsyncSnapshot<dynamic> snapshot) {
-              if (!snapshot.hasData ||
-                  snapshot.data == null ||
-                  snapshot.data.isEmpty ||
-                  snapshot.hasError) {
-                if (count > 0) {
-                  count = 0;
-                  return Container();
-                } else {
-                  return Container(
-                    height: MediaQuery.of(context).size.height - 200,
-                    child: Center(
-                      child: CircularProgressIndicator(),
+      body: FutureBuilder<dynamic>(
+        initialData: [],
+        future: getdata(),
+        builder: (context, AsyncSnapshot<dynamic> snapshot) {
+          if (!snapshot.hasData ||
+              snapshot.data == null ||
+              snapshot.data.isEmpty ||
+              snapshot.hasError) {
+            if (count > 0) {
+              count = 0;
+              return Container();
+            } else {
+              return Container(
+                height: MediaQuery.of(context).size.height - 200,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+          } else {
+            var nama_barang =
+                snapshot.data[widget.index]["nama_barang"].toString();
+            var brand = snapshot.data[widget.index]["brand"].toString();
+            var kategori_barang =
+                snapshot.data[widget.index]["kategori_barang"].toString();
+            var kode_barang =
+                snapshot.data[widget.index]["kode_barang"].toString();
+            var nomor_seri =
+                snapshot.data[widget.index]["nomor_seri"].toString();
+            var harga_beli =
+                snapshot.data[widget.index]["harga_beli"].toString();
+            var harga_jual =
+                snapshot.data[widget.index]["harga_jual"].toString();
+            var stok_minimum =
+                snapshot.data[widget.index]["stok_minimum"].toString();
+            var keterangan =
+                snapshot.data[widget.index]["keterangan"].toString();
+
+            return SingleChildScrollView(
+              child: Container(
+                margin: EdgeInsets.only(top: 10, left: 20),
+                child: Column(
+                  children: [
+                    CustomText(
+                      text: "Kode Barang : $kode_barang",
+                      textStyle: TextStyle(fontSize: 12),
+                      sizedBox: SizedBox(height: 5),
                     ),
-                  );
-                }
-              } else {
-                var nama_barang = snapshot.data[0]["nama_barang"].toString();
-                var brand = snapshot.data[0]["brand"].toString();
-                var kategori_barang = snapshot.data[0]["kategori_barang"].toString();
-                var kode_barang = snapshot.data[0]["kode_barang"].toString();
-                var nomor_seri = snapshot.data[0]["nomor_seri"].toString();
-                var harga_beli = snapshot.data[0]["harga_beli"].toString();
-                var harga_jual = snapshot.data[0]["harga_jual"].toString();
-                var stok_minimum = snapshot.data[0]["stok_minimum"].toString();
-                // var statuspkp = "tidak";
-                // var brandtext = " - ";
-                // if (snapshot.data["taxpayer"] == 1) statuspkp = "ya";
-                // try {
-                //   brandtext = snapshot.data["brand"]["name"];
-                // } catch (e) {
-                //   brandtext = " - ";
-                // }
-                return SingleChildScrollView(
-                  child: Container(
-                    margin: EdgeInsets.only(top: 10, left: 20),
-                    child: Column(children: [
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          nama_barang,
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          brand,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          kategori_barang,
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          kode_barang,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          nomor_seri,
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          harga_beli,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          harga_jual,
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          stok_minimum,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ]),
-                  ),
-                );
-              }
-            },
-          ),
-        ),
+                    CustomText(
+                      text: "Nama Barang : $nama_barang",
+                      textStyle: TextStyle(fontSize: 12),
+                      sizedBox: SizedBox(height: 5),
+                    ),
+                    CustomText(
+                      text: "Kategori Barang : $kategori_barang",
+                      textStyle: TextStyle(fontSize: 12),
+                      sizedBox: SizedBox(height: 5),
+                    ),
+                    CustomText(
+                      text: "Brand : $brand",
+                      textStyle: TextStyle(fontSize: 12),
+                      sizedBox: SizedBox(height: 5),
+                    ),
+                    CustomText(
+                      text: "Nomor seri : $nomor_seri",
+                      textStyle: TextStyle(fontSize: 12),
+                      sizedBox: SizedBox(height: 5),
+                    ),
+                    CustomText(
+                      text: "Harga beli : $harga_beli",
+                      textStyle: TextStyle(fontSize: 12),
+                      sizedBox: SizedBox(height: 5),
+                    ),
+                    CustomText(
+                      text: "Harga jual : $harga_jual",
+                      textStyle: TextStyle(fontSize: 12),
+                      sizedBox: SizedBox(height: 5),
+                    ),
+                    CustomText(
+                      text: "Stok minimum : $stok_minimum",
+                      textStyle: TextStyle(fontSize: 12),
+                      sizedBox: SizedBox(height: 5),
+                    ),
+                    CustomText(
+                      text: "Keterangan : $keterangan",
+                      textStyle: TextStyle(fontSize: 12),
+                      sizedBox: SizedBox(height: 5),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+        },
       ),
       floatingActionButton: FocusedMenuHolder(
         menuWidth: 135,
@@ -307,105 +281,114 @@ class _barang_detailState extends State<barang_detail> {
         bottomOffsetHeight: 80.0,
         menuItems: <FocusedMenuItem>[
           FocusedMenuItem(
-              backgroundColor: Colors.transparent,
-              title: Row(
-                children: [
-                  Container(
-                    padding:
-                        EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Colors.white,
-                    ),
-                    child: Text(
-                      "Hapus",
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black),
+            backgroundColor: Colors.transparent,
+            title: Row(
+              children: [
+                Container(
+                  padding:
+                      EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Colors.white,
+                  ),
+                  child: Text(
+                    "Hapus",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
                     ),
                   ),
-                  SizedBox(width: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      color: Colors.white,
-                    ),
-                    child: ImageIcon(
-                        size: 36, AssetImage("assets/icons/trash.png")),
+                ),
+                SizedBox(width: 10),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    color: Colors.white,
                   ),
-                ],
-              ),
-              onPressed: () {
-                _showMyDialog();
-              }),
+                  child: ImageIcon(
+                    size: 36,
+                    AssetImage("assets/icons/trash.png"),
+                  ),
+                ),
+              ],
+            ),
+            onPressed: () {
+              _showMyDialog();
+            },
+          ),
           FocusedMenuItem(
-              backgroundColor: Colors.transparent,
-              title: Row(
-                children: [
-                  Container(
-                    padding:
-                        EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Colors.white,
-                    ),
-                    child: Text(
-                      " Ubah ",
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black),
+            backgroundColor: Colors.transparent,
+            title: Row(
+              children: [
+                Container(
+                  padding:
+                      EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Colors.white,
+                  ),
+                  child: Text(
+                    " Ubah ",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
                     ),
                   ),
-                  SizedBox(width: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      color: Colors.white,
-                    ),
-                    child: ImageIcon(
-                        size: 36, AssetImage("assets/icons/edit.png")),
+                ),
+                SizedBox(width: 10),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    color: Colors.white,
                   ),
-                ],
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => barang_cru(
-                      edit: true,
-                      index: widget.index,
-                    ),
+                  child: ImageIcon(
+                    size: 36,
+                    AssetImage("assets/icons/edit.png"),
                   ),
-                );
-              }),
+                ),
+              ],
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => barang_cru(
+                    edit: true,
+                    index: widget.index,
+                  ),
+                ),
+              );
+            },
+          ),
         ],
         onPressed: () {},
         child: Container(
-            width: 48,
-            height: 48,
-            margin: const EdgeInsets.only(bottom: 40, right: 20),
-            child: Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: ShapeDecoration(
-                  shadows: [
-                    BoxShadow(
-                      color: Color.fromARGB(71, 0, 0, 0),
-                      offset: new Offset(5.0, 5.0),
-                      blurRadius: 5.0,
-                    )
-                  ],
-                  color: Color.fromARGB(255, 253, 133, 58),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  )),
-              child: const Icon(
-                Icons.menu,
-                color: Colors.white,
-              ),
-            )),
+          width: 48,
+          height: 48,
+          margin: const EdgeInsets.only(bottom: 40, right: 20),
+          child: Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: ShapeDecoration(
+                shadows: [
+                  BoxShadow(
+                    color: colors.textPrimary,
+                    offset: new Offset(5.0, 5.0),
+                    blurRadius: 5.0,
+                  )
+                ],
+                color: colors.secondary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                )),
+            child: const Icon(
+              Icons.menu,
+              color: Colors.white,
+            ),
+          ),
+        ),
       ),
       backgroundColor: Colors.white,
     );
