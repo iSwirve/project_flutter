@@ -1,5 +1,6 @@
 import 'package:basicpos_v2/pages/master/ekspedisi.dart';
 import 'package:basicpos_v2/pages/master/ekspedisi_cru.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
@@ -12,8 +13,14 @@ class ekspedisi_detail extends StatefulWidget {
   @override
   State<ekspedisi_detail> createState() => _ekspedisiState();
 }
-
+  Future<void> _delete(String productId) async {
+    await _ekspedisi.doc(productId).delete();
+  }
+  final CollectionReference _ekspedisi =
+      FirebaseFirestore.instance.collection('Ekspedisi');
 class _ekspedisiState extends State<ekspedisi_detail> {
+
+
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
@@ -91,6 +98,8 @@ class _ekspedisiState extends State<ekspedisi_detail> {
                           ),
                         ),
                         onPressed: () async {
+                          var id = await getId(widget.index);
+                          _delete(id);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -109,10 +118,17 @@ class _ekspedisiState extends State<ekspedisi_detail> {
       },
     );
   }
-
+    final CollectionReference _ekspedisi =
+      FirebaseFirestore.instance.collection('Ekspedisi');
   getdata() async {
+    QuerySnapshot querySnapshot = await _ekspedisi.get();
+    final data = querySnapshot.docs.map((doc) => doc.data()).toList();
+    return data;
   }
-
+  getId(int index) async {
+    QuerySnapshot querySnapshot = await _ekspedisi.get();
+    return querySnapshot.docs[index].id;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,7 +162,13 @@ class _ekspedisiState extends State<ekspedisi_detail> {
             builder: (context, AsyncSnapshot<dynamic> snapshot) {
               var datalist = [];
               if (snapshot.hasData) {
-                datalist.add(snapshot.data);
+            var nama =
+                snapshot.data[widget.index]["nama"].toString();
+            var alamat = snapshot.data[widget.index]["alamat"].toString();
+            var kota =
+                snapshot.data[widget.index]["kota"].toString();
+            var notelp =
+                snapshot.data[widget.index]["notelp"].toString();
                 return Container(
                   margin: EdgeInsets.only(top: 10, left: 20),
                   child: Column(children: [
@@ -165,7 +187,7 @@ class _ekspedisiState extends State<ekspedisi_detail> {
                       alignment: Alignment.centerLeft,
                       margin: EdgeInsets.only(top: 7),
                       child: Text(
-                        datalist[0]["name"] ?? "-",
+                        nama,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -188,7 +210,7 @@ class _ekspedisiState extends State<ekspedisi_detail> {
                       alignment: Alignment.centerLeft,
                       margin: EdgeInsets.only(top: 7),
                       child: Text(
-                        datalist[0]["address"] ?? "-",
+                        alamat,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -211,7 +233,7 @@ class _ekspedisiState extends State<ekspedisi_detail> {
                       alignment: Alignment.centerLeft,
                       margin: EdgeInsets.only(top: 7),
                       child: Text(
-                        datalist[0]["city"] ?? "-",
+                        kota,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -234,7 +256,7 @@ class _ekspedisiState extends State<ekspedisi_detail> {
                       alignment: Alignment.centerLeft,
                       margin: EdgeInsets.only(top: 7),
                       child: Text(
-                        datalist[0]["phone"] ?? "-",
+                        notelp,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,

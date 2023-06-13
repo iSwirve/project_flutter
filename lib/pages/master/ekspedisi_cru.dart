@@ -4,6 +4,7 @@ import 'package:basicpos_v2/pages/master/ekspedisi.dart';
 import 'package:basicpos_v2/pages/master/sales.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
 import 'package:basicpos_v2/constants/colors.dart' as colors;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../components/custom_text_field.dart';
 import '../../constants/dimens.dart' as dimens;
@@ -12,7 +13,7 @@ import 'package:flutter/material.dart';
 
 class ekspedisi_cru extends StatefulWidget {
   final edit;
-  int? index;
+  final index;
   ekspedisi_cru({super.key, this.edit, this.index});
 
   static const routeName = '/ekspedisi_cru';
@@ -22,15 +23,23 @@ class ekspedisi_cru extends StatefulWidget {
 }
 
 class _ekspedisi_cruState extends State<ekspedisi_cru> {
+    CollectionReference _ekspedisi=
+      FirebaseFirestore.instance.collection('Ekspedisi');
   TextEditingController nama = TextEditingController();
   TextEditingController alamat = TextEditingController();
   TextEditingController kota = TextEditingController();
   TextEditingController no_telp = TextEditingController();
 
   var title = "Tambah";
-
+  getId(int index) async {
+    QuerySnapshot querySnapshot = await _ekspedisi.get();
+    return querySnapshot.docs[index].id;
+  }
   getdata() async {
+    QuerySnapshot querySnapshot = await _ekspedisi.get();
+    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
 
+    return allData;
   }
 
   @override
@@ -84,18 +93,23 @@ class _ekspedisi_cruState extends State<ekspedisi_cru> {
                       if (snapshot.data == {}) {
                         return Container();
                       } else {
+                        if(title == "Edit"){
                         return Container(
                           height: MediaQuery.of(context).size.height - 200,
                           child: Center(
                             child: CircularProgressIndicator(),
                           ),
                         );
+                        }
+
                       }
                     } else {
-                      nama.text = snapshot.data["name"] ?? '-';
-                      alamat.text = snapshot.data["address"] ?? '-';
-                      kota.text = snapshot.data["city"] ?? '-';
-                      no_telp.text = snapshot.data["phone"] ?? '-';
+                      if(title == "Edit"){
+                      nama.text = snapshot.data[widget.index]["nama"] ?? '-';
+                      alamat.text = snapshot.data[widget.index]["alamat"] ?? '-';
+                      kota.text = snapshot.data[widget.index]["kota"] ?? '-';
+                      no_telp.text = snapshot.data[widget.index]["notelp"] ?? '-';
+                      }
                     }
                   }
                   return Column(
@@ -130,15 +144,24 @@ class _ekspedisi_cruState extends State<ekspedisi_cru> {
             CustomButton(
               text: title,
               onPressed: () async {
-                Map<dynamic, dynamic> body = {
-                  "name": nama.text.toString(),
-                  "address": alamat.text.toString(),
-                  "phone": no_telp.text.toString(),
-                  "city": kota.text.toString(),
+                Map<String, String>? body; 
+                body = {
+                  "nama": nama.text.toString(),
+                  "alamat": alamat.text.toString(),
+                  "notelp": no_telp.text.toString(),
+                  "kota": kota.text.toString(),
                 };
                 if (title == "Tambah") {
-                  Fluttertoast.showToast(msg: "Success Insert");
+                  if (nama.text.isEmpty)
+                    Fluttertoast.showToast(
+                        msg: "Nama barang tidak boleh kosong");
+                  else {
+                    Fluttertoast.showToast(msg: "Sukses Insert");
+                    await _ekspedisi.add(body);
+                  }
                 } else {
+                  var id = await getId(widget.index);
+                  await _ekspedisi.doc(id).update(body);
                   Fluttertoast.showToast(msg: "Success Update");
                 }
               },

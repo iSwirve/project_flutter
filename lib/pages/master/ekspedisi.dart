@@ -1,6 +1,7 @@
 import 'package:basicpos_v2/pages/main_menu.dart';
 import 'package:basicpos_v2/pages/master/ekspedisi_cru.dart';
 import 'package:basicpos_v2/pages/master/ekspedisi_detail.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
 
@@ -12,11 +13,18 @@ class ekspedisi extends StatefulWidget {
 }
 
 class _ekspedisiState extends State<ekspedisi> {
+    final CollectionReference _ekspedisi =
+      FirebaseFirestore.instance.collection('Ekspedisi');
   int count = 0;
   getdata() async {
-
+    QuerySnapshot querySnapshot = await _ekspedisi.get();
+    final data = querySnapshot.docs.map((doc) => doc.data()).toList();
+    return data;
   }
-
+  getId(int index) async {
+    QuerySnapshot querySnapshot = await _ekspedisi.get();
+    return querySnapshot.docs[index].id;
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -102,10 +110,7 @@ class _ekspedisiState extends State<ekspedisi> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
-                          var name = snapshot.data[index]["name"].toString();
-                          var id = int.parse(
-                            snapshot.data[index]["id"].toString(),
-                          );
+                          var name = snapshot.data[index]["nama"].toString();
                           var ava = name.toString().substring(0, 1);
                           return GestureDetector(
                             onTap: () async {
@@ -113,7 +118,7 @@ class _ekspedisiState extends State<ekspedisi> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      ekspedisi_detail(index: id),
+                                      ekspedisi_detail(index: index),
                                 ),
                               );
                             },
