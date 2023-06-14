@@ -109,7 +109,7 @@ class _pelangganState extends State<pelanggan> {
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
                           var name = snapshot.data[index]["nama_depan"].toString()+" "+ snapshot.data[index]["nama_belakang"].toString();
-                          var id = snapshot.data[index]["id"];
+                          var id = snapshot.data[index]["id"].toString();
                           var ava = name.toString().substring(0, 1);
                           return GestureDetector(
                             onTap: () async {

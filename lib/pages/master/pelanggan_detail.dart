@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:basicpos_v2/components/custom_text.dart';
 
 class pelanggan_detail extends StatefulWidget {
   final index;
@@ -20,6 +21,10 @@ class pelanggan_detail extends StatefulWidget {
 
 class _pelangganState extends State<pelanggan_detail> {
   int count = 0;
+
+  Future<void> _delete(String id) async {
+    await _Pelanggan.doc(id).delete();
+  }
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
@@ -112,10 +117,20 @@ class _pelangganState extends State<pelanggan_detail> {
     );
   }
 
+  final CollectionReference _Pelanggan =
+      FirebaseFirestore.instance.collection('Pelanggan');
+
   getdata() async {
-    
+    QuerySnapshot querySnapshot = await _Pelanggan.get();
+    final datas = querySnapshot.docs.map((doc) => doc.data()).toList();
+
+    return datas;
   }
 
+  getId(int index) async {
+    QuerySnapshot querySnapshot = await _Pelanggan.get();
+    return querySnapshot.docs[index].id;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -164,257 +179,43 @@ class _pelangganState extends State<pelanggan_detail> {
                   );
                 }
               } else {
-                var statuspkp = "tidak";
-                if (snapshot.data["taxpayer"] == 1) statuspkp = "ya";
-                var customercategory = "";
-                try {
-                  customercategory = snapshot.data["customer_category"]["name"].toString();
-                } catch (e) {
-                  customercategory = snapshot.data["customer_category"].toString();
-                  if (customercategory == "null") {
-                    customercategory = " - ";
-                  }
-                }
+                var nama_depan =snapshot.data[getId(widget.index)]["nama_depan"].toString();
+                var nama_belakang = snapshot.data[getId(widget.index)]["nama_belakang"].toString();
+                var alamat =snapshot.data[getId(widget.index)]["alamat"].toString();
+                var telepon =snapshot.data[getId(widget.index)]["telepon"].toString();
+                var email =snapshot.data[getId(widget.index)]["email"].toString();
                 return SingleChildScrollView(
                   child: Container(
-                    margin: EdgeInsets.only(top: 10, left: 20),
-                    child: Column(children: [
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          "Nama",
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
+                  margin: EdgeInsets.only(top: 10, left: 20),
+                  child: Column(
+                    children: [
+                      CustomText(
+                        text: "Nama Depan : $nama_depan",
+                        textStyle: TextStyle(fontSize: 12),
+                        sizedBox: SizedBox(height: 5),
                       ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          snapshot.data["name"] ?? " - ",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                      CustomText(
+                        text: "Nama belakang : $nama_belakang",
+                        textStyle: TextStyle(fontSize: 12),
+                        sizedBox: SizedBox(height: 5),
                       ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text("Kategori Pelanggan",
-                            style: TextStyle(
-                              fontSize: 12,
-                            )),
+                      CustomText(
+                        text: "Alamat: $alamat",
+                        textStyle: TextStyle(fontSize: 12),
+                        sizedBox: SizedBox(height: 5),
                       ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(customercategory,
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w500)),
+                      CustomText(
+                        text: "Telepon : $telepon",
+                        textStyle: TextStyle(fontSize: 12),
+                        sizedBox: SizedBox(height: 5),
                       ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text("Kode",
-                            style: TextStyle(
-                              fontSize: 12,
-                            )),
+                      CustomText(
+                        text: "Email : $email",
+                        textStyle: TextStyle(fontSize: 12),
+                        sizedBox: SizedBox(height: 5),
                       ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(snapshot.data["code"] ?? " - ",
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w500)),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text("PIC",
-                            style: TextStyle(
-                              fontSize: 12,
-                            )),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(snapshot.data["pic_name"] ?? " - ",
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w500)),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text("Telepon",
-                            style: TextStyle(
-                              fontSize: 12,
-                            )),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(snapshot.data["phone"] ?? " - ",
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w500)),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text("Alamat penagihan",
-                            style: TextStyle(
-                              fontSize: 12,
-                            )),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(snapshot.data["billing_address"] ?? " - ",
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w500)),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text("Alamat pengiriman",
-                            style: TextStyle(
-                              fontSize: 12,
-                            )),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(snapshot.data["shipping_address"] ?? " - ",
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w500)),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text("Status PKP",
-                            style: TextStyle(
-                              fontSize: 12,
-                            )),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          statuspkp,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          "Jatuh Tempo",
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          snapshot.data["sales_due_days"].toString(),
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          "Sales",
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          snapshot.data["salesperson"].toString(),
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          "Kota",
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          snapshot.data["city"] ?? " - ",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          "Ekspedisi",
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          snapshot.data["expedition"] ?? " - ",
-                          style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    ]),
+                    ],
+                  ),
                   ),
                 );
               }

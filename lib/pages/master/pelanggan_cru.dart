@@ -145,14 +145,14 @@ class _pelanggan_cruState extends State<pelanggan_cru> {
             CustomButton(
               text: title,
               onPressed: () async {
-                Map<String, dynamic> body;
-                int count = await FirebaseFirestore.instance.collection('Pelanggan').get().then((value) => value.size);
+                Map<String, String> body;
+                int count = await FirebaseFirestore.instance.collection('Pelanggan').get().then((value) => value.size+1);
                 body = {  
                   'alamat': alamat.text.toString(),
                   'email': email.text.toString(),
-                  'id': count++,
-                  'name_belakang': nama_belakang.text.toString(),
-                  "name_depan": nama_depan.text.toString(),
+                  'id': count.toString(),
+                  'nama_belakang': nama_belakang.text.toString(),
+                  "nama_depan": nama_depan.text.toString(),
                   'telepon': telepon.text.toString(),
                 };
 
