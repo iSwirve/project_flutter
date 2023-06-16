@@ -1,3 +1,4 @@
+import 'package:basicpos_v2/pages/memo/memo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:basicpos_v2/pages/master/barang.dart';
 import 'package:basicpos_v2/pages/master/brand.dart';
@@ -290,6 +291,15 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => stok(),
+                                ),
+                              );
+                            }
+                            else if (search[index].getTitle() ==
+                                "Memo") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => memo(),
                                 ),
                               );
                             }
