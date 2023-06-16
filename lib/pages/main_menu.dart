@@ -9,6 +9,7 @@ import 'package:basicpos_v2/pages/master/kategori_pelanggan.dart';
 import 'package:basicpos_v2/pages/master/pelanggan.dart';
 import 'package:basicpos_v2/pages/master/sales.dart';
 import 'package:basicpos_v2/pages/master/supplier.dart';
+import 'package:basicpos_v2/pages/stok/stok.dart';
 import 'package:flutter/material.dart';
 import '../constants/colors.dart' as colors;
 
@@ -282,7 +283,17 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                   builder: (context) => faktur_pajak(),
                                 ),
                               );
-                            } else if (search[index].getTitle() == "Logout") {
+                            }
+                            else if (search[index].getTitle() ==
+                                "Stok") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => stok(),
+                                ),
+                              );
+                            }
+                             else if (search[index].getTitle() == "Logout") {
                               FirebaseAuth.instance.signOut();
                             }
                           },
