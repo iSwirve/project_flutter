@@ -2,6 +2,7 @@ import 'package:basicpos_v2/pages/master/barang.dart';
 import 'package:basicpos_v2/pages/master/barang_cru.dart';
 import 'package:basicpos_v2/pages/master/brand.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:focused_menu/focused_menu.dart';
@@ -9,6 +10,8 @@ import 'package:focused_menu/modals.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
 import 'package:basicpos_v2/constants/colors.dart' as colors;
 import 'package:basicpos_v2/components/custom_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class barang_detail extends StatefulWidget {
   final index;
@@ -20,7 +23,7 @@ class barang_detail extends StatefulWidget {
 
 class _barang_detailState extends State<barang_detail> {
   int count = 0;
-
+  final _db = FirebaseFirestore.instance;
   Future<void> _delete(String productId) async {
     await _barang.doc(productId).delete();
   }
@@ -124,30 +127,82 @@ class _barang_detailState extends State<barang_detail> {
     );
   }
 
+  var brandIDku;
+
+
+
+  Future<void> getdata2(String brandID) async
+  {
+    var collection = FirebaseFirestore.instance.collection('Brand');
+    var docSnapshot = await collection.doc(brandID).get();
+    if (docSnapshot.exists) {
+      Map<String, dynamic>? data = docSnapshot.data();
+      var value = data?['name']; // <-- The value you want to retrieve.
+      brandIDku = value;
+      print(brandIDku);
+    }
+  }
+
+
+  final CollectionReference _brand =
+      FirebaseFirestore.instance.collection('Brand');
+
   final CollectionReference _barang =
       FirebaseFirestore.instance.collection('Barang');
 
   final CollectionReference _kategori =
       FirebaseFirestore.instance.collection('Kategori');
 
+
+
+
   getdata() async {
     QuerySnapshot querySnapshot = await _barang.get();
     final datas = querySnapshot.docs.map((doc) => doc.data()).toList();
+    QuerySnapshot qs = await _brand.get();
+    final dataBrand = qs.docs.map((doc) => doc.data()).toList();
 
-    return datas;
+    QuerySnapshot qs2 = await _kategori.get();
+    final dataKat = qs2.docs.map((doc) => doc.data()).toList();
+    // print(dataBrand[widget.index]);
+
+    // var brandID = getId(widget.index);
+    // final snaps = await _db.collection("Brand").where(FieldPath.documentId == brandID).get();
+    // print(snaps.runtimeType);
+
+
+    // QuerySnapshot querySnapshot = await _barang.get();
+    // var brandID = querySnapshot.docs[0];
+    // print("1" + brandID.runtimeType.toString());
+    // getdata2(brandID["name"]);
+    return [datas, dataBrand,dataKat];
+
   }
+
 
   getId(int index) async {
     QuerySnapshot querySnapshot = await _barang.get();
+
+    // getdata2(index);
     return querySnapshot.docs[index].id;
   }
 
-  // Future<void> _delete(String productId) async {
-  //   await _barang.doc(productId).delete();
-  // }
+  // var temp2 = await getId(widget.index);
+
+
+
+
+
+
+  // var temp5 = await idInit();
+
+
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -190,23 +245,26 @@ class _barang_detailState extends State<barang_detail> {
               );
             }
           } else {
+            // print(snapshot.data.runtimeType);
             var nama_barang =
-                snapshot.data[widget.index]["nama_barang"].toString();
-            var brand = snapshot.data[widget.index]["brand"].toString();
+                snapshot.data[0][widget.index]["nama_barang"].toString();
+            var brand = snapshot.data[1][widget.index]["name"].toString();
+            // var brand2 = _brand.FirebaseFirestore;
+            // print(getdata2(brand));
             var kategori_barang =
-                snapshot.data[widget.index]["kategori_barang"].toString();
+                snapshot.data[2][widget.index]["name"].toString();
             var kode_barang =
-                snapshot.data[widget.index]["kode_barang"].toString();
+                snapshot.data[0][widget.index]["kode_barang"].toString();
             var nomor_seri =
-                snapshot.data[widget.index]["nomor_seri"].toString();
+                snapshot.data[0][widget.index]["nomor_seri"].toString();
             var harga_beli =
-                snapshot.data[widget.index]["harga_beli"].toString();
+                snapshot.data[0][widget.index]["harga_beli"].toString();
             var harga_jual =
-                snapshot.data[widget.index]["harga_jual"].toString();
+                snapshot.data[0][widget.index]["harga_jual"].toString();
             var stok_minimum =
-                snapshot.data[widget.index]["stok_minimum"].toString();
+                snapshot.data[0][widget.index]["stok_minimum"].toString();
             var keterangan =
-                snapshot.data[widget.index]["keterangan"].toString();
+                snapshot.data[0][widget.index]["keterangan"].toString();
 
             return SingleChildScrollView(
               child: Container(
