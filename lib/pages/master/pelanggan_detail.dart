@@ -123,7 +123,7 @@ class _pelangganState extends State<pelanggan_detail> {
   getdata() async {
     QuerySnapshot querySnapshot = await _Pelanggan.get();
     final datas = querySnapshot.docs.map((doc) => doc.data()).toList();
-
+   
     return datas;
   }
 
@@ -179,11 +179,11 @@ class _pelangganState extends State<pelanggan_detail> {
                   );
                 }
               } else {
-                var nama_depan =snapshot.data[getId(widget.index)]["nama_depan"].toString();
-                var nama_belakang = snapshot.data[getId(widget.index)]["nama_belakang"].toString();
-                var alamat =snapshot.data[getId(widget.index)]["alamat"].toString();
-                var telepon =snapshot.data[getId(widget.index)]["telepon"].toString();
-                var email =snapshot.data[getId(widget.index)]["email"].toString();
+                var nama_depan =snapshot.data[int.parse(widget.index)]["nama_depan"].toString();
+                var nama_belakang = snapshot.data[int.parse(widget.index)]["nama_belakang"].toString();
+                var alamat =snapshot.data[int.parse(widget.index)]["alamat"].toString();
+                var telepon =snapshot.data[int.parse(widget.index)]["telepon"].toString();
+                var email =snapshot.data[int.parse(widget.index)]["email"].toString();
                 return SingleChildScrollView(
                   child: Container(
                   margin: EdgeInsets.only(top: 10, left: 20),
