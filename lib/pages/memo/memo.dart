@@ -4,6 +4,7 @@ import 'package:basicpos_v2/pages/main_menu.dart';
 import 'package:basicpos_v2/pages/master/supplier_cru.dart';
 import 'package:basicpos_v2/pages/master/supplier_detail.dart';
 import 'package:basicpos_v2/constants/colors.dart' as colors;
+import 'package:basicpos_v2/pages/memo/memo_cru.dart';
 import 'package:basicpos_v2/pages/memo/memo_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,13 +28,7 @@ class _memoState extends State<memo> {
 
     QuerySnapshot qs1 = await _collectionRef1.get();
     final allData1 = qs1.docs.map((doc) => doc.data()).toList();
-    QuerySnapshot qs2 = await _collectionRef2.get();
-    final allData2 = qs2.docs.map((doc) => doc.data()).toList();
-    return [allData1,allData2];
-  }
-
-  getId(int index) async {
-
+    return allData1;
   }
 
 
@@ -114,7 +109,7 @@ class _memoState extends State<memo> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
-                          var nama_barang = snapshot.data[0][index]["catatan"].toString();
+                          var nama_barang = snapshot.data[index]["judul_memo"].toString();
                           var ava =
                                nama_barang.toString().substring(0, 1).toUpperCase();
                                              return GestureDetector(
@@ -174,7 +169,7 @@ class _memoState extends State<memo> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => supplier_cru(edit: false),
+                builder: (context) => memo_cru(edit: false),
               ),
             );
           }),
