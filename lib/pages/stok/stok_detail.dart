@@ -1,31 +1,44 @@
-import 'package:basicpos_v2/pages/master/barang.dart';
-import 'package:basicpos_v2/pages/master/barang_cru.dart';
-import 'package:basicpos_v2/pages/master/brand.dart';
+import 'package:basicpos_v2/pages/stok/memo.dart';
+import 'package:basicpos_v2/pages/stok/stok.dart';
+import 'package:basicpos_v2/pages/stok/stok_cru.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
 import 'package:basicpos_v2/constants/colors.dart' as colors;
-import 'package:basicpos_v2/components/custom_text.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../components/custom_text.dart';
 
-class barang_detail extends StatefulWidget {
+class stok_detail extends StatefulWidget {
   final index;
-  const barang_detail({super.key, this.index});
+
+  const stok_detail({super.key, this.index});
+  static const routeName = '/stok_detail';
 
   @override
-  State<barang_detail> createState() => _barang_detailState();
+  State<stok_detail> createState() => _stok_detailState();
 }
 
-class _barang_detailState extends State<barang_detail> {
-  int count = 0;
-  final _db = FirebaseFirestore.instance;
+class _stok_detailState extends State<stok_detail> {
+  final CollectionReference _stok =
+      FirebaseFirestore.instance.collection('Stok');
+
   Future<void> _delete(String productId) async {
-    await _barang.doc(productId).delete();
+    await _stok.doc(productId).delete();
+  }
+
+  getdata() async {
+    QuerySnapshot qs = await _stok.get();
+    final dataMemo = qs.docs.map((doc) => doc.data()).toList();
+    return dataMemo;
+  }
+
+  getId(int index) async {
+    QuerySnapshot querySnapshot = await _stok.get();
+    return querySnapshot.docs[index].id;
   }
 
   Future<void> _showMyDialog() async {
@@ -111,7 +124,7 @@ class _barang_detailState extends State<barang_detail> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => barang(),
+                              builder: (context) => stok(),
                             ),
                           );
                         },
@@ -127,55 +140,13 @@ class _barang_detailState extends State<barang_detail> {
     );
   }
 
-  var brandIDku;
-
-  Future<void> getdata2(String brandID) async
-  {
-    var collection = FirebaseFirestore.instance.collection('Brand');
-    var docSnapshot = await collection.doc(brandID).get();
-    if (docSnapshot.exists) {
-      Map<String, dynamic>? data = docSnapshot.data();
-      var value = data?['name']; // <-- The value you want to retrieve.
-      brandIDku = value;
-      print(brandIDku);
-    }
-  }
-
-
-  final CollectionReference _brand =
-      FirebaseFirestore.instance.collection('Brand');
-
-  final CollectionReference _barang =
-      FirebaseFirestore.instance.collection('Barang');
-
-  final CollectionReference _kategori =
-      FirebaseFirestore.instance.collection('Kategori');
-
-  getdata() async {
-    QuerySnapshot querySnapshot = await _barang.get();
-    final datas = querySnapshot.docs.map((doc) => doc.data()).toList();
-    QuerySnapshot qs = await _brand.get();
-    final dataBrand = qs.docs.map((doc) => doc.data()).toList();
-
-    QuerySnapshot qs2 = await _kategori.get();
-    final dataKat = qs2.docs.map((doc) => doc.data()).toList();
-    return [datas, dataBrand,dataKat];
-
-  }
-
-
-  getId(int index) async {
-    QuerySnapshot querySnapshot = await _barang.get();
-    return querySnapshot.docs[index].id;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         title: const Text(
-          "Detail barang",
+          "Detail stok",
           style: TextStyle(
             color: Colors.black,
           ),
@@ -186,7 +157,7 @@ class _barang_detailState extends State<barang_detail> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => barang(),
+                builder: (context) => stok(),
               ),
             );
           },
@@ -201,92 +172,56 @@ class _barang_detailState extends State<barang_detail> {
               snapshot.data == null ||
               snapshot.data.isEmpty ||
               snapshot.hasError) {
-            if (count > 0) {
-              count = 0;
-              return Container();
-            } else {
-              return Container(
-                height: MediaQuery.of(context).size.height - 200,
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-          } else {
-            // print(snapshot.data.runtimeType);
-            var nama_barang =
-                snapshot.data[0][widget.index]["nama_barang"].toString();
-            var brand = snapshot.data[1][widget.index]["name"].toString();
-            // var brand2 = _brand.FirebaseFirestore;
-            // print(getdata2(brand));
-            var kategori_barang =
-                snapshot.data[2][widget.index]["name"].toString();
-            var kode_barang =
-                snapshot.data[0][widget.index]["kode_barang"].toString();
-            var nomor_seri =
-                snapshot.data[0][widget.index]["nomor_seri"].toString();
-            var harga_beli =
-                snapshot.data[0][widget.index]["harga_beli"].toString();
-            var harga_jual =
-                snapshot.data[0][widget.index]["harga_jual"].toString();
-            var stok_minimum =
-                snapshot.data[0][widget.index]["stok_minimum"].toString();
-            var keterangan =
-                snapshot.data[0][widget.index]["keterangan"].toString();
-
-            return SingleChildScrollView(
-              child: Container(
-                margin: EdgeInsets.only(top: 10, left: 20),
-                child: Column(
-                  children: [
-                    CustomText(
-                      text: "Kode Barang : $kode_barang",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                    CustomText(
-                      text: "Nama Barang : $nama_barang",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                    CustomText(
-                      text: "Kategori Barang : $kategori_barang",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                    CustomText(
-                      text: "Brand : $brand",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                    CustomText(
-                      text: "Nomor seri : $nomor_seri",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                    CustomText(
-                      text: "Harga beli : $harga_beli",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                    CustomText(
-                      text: "Harga jual : $harga_jual",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                    CustomText(
-                      text: "Stok minimum : $stok_minimum",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                    CustomText(
-                      text: "Keterangan : $keterangan",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                  ],
-                ),
+            return Container(
+              height: MediaQuery.of(context).size.height - 200,
+              child: Center(
+                child: CircularProgressIndicator(),
               ),
+            );
+          } else {
+            var idBarang = snapshot.data[widget.index]["id_barang"].toString();
+            var stok_baik = snapshot.data[widget.index]["stok_baik"].toString();
+            var stok_rusak =
+                snapshot.data[widget.index]["stok_rusak"].toString();
+            return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+              stream: FirebaseFirestore.instance
+                  .collection('Barang')
+                  .doc('$idBarang')
+                  .snapshots(),
+              builder: (context, snap) {
+                var data = snap.data?.data();
+                var nama_barang = data?["nama_barang"].toString();
+                var kode_barang = data?["kode_barang"].toString();
+                return SingleChildScrollView(
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10, left: 20),
+                    child: Column(
+                      children: [
+                        CustomText(
+                          text: "Kode Barang : $kode_barang",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                        CustomText(
+                          text: "Nama Barang : $nama_barang",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                        CustomText(
+                          text: "Stok baik : $stok_baik",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                        CustomText(
+                          text: "Stok Rusak : $stok_rusak",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             );
           }
         },
@@ -380,7 +315,7 @@ class _barang_detailState extends State<barang_detail> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => barang_cru(
+                  builder: (context) => stok_cru(
                     edit: true,
                     index: widget.index,
                   ),

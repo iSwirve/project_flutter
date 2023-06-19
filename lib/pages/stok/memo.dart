@@ -4,13 +4,12 @@ import 'package:basicpos_v2/pages/main_menu.dart';
 import 'package:basicpos_v2/pages/master/supplier_cru.dart';
 import 'package:basicpos_v2/pages/master/supplier_detail.dart';
 import 'package:basicpos_v2/constants/colors.dart' as colors;
-import 'package:basicpos_v2/pages/memo/memo_cru.dart';
-import 'package:basicpos_v2/pages/memo/memo_detail.dart';
+import 'package:basicpos_v2/pages/stok/memo_cru.dart';
+import 'package:basicpos_v2/pages/stok/memo_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
-
 
 class memo extends StatefulWidget {
   const memo({super.key});
@@ -19,20 +18,17 @@ class memo extends StatefulWidget {
   State<memo> createState() => _memoState();
 }
 
-    CollectionReference _collectionRef1=
-        FirebaseFirestore.instance.collection('Memo');
-    CollectionReference _collectionRef2=
-        FirebaseFirestore.instance.collection('Barang');
+CollectionReference _collectionRef1 =
+    FirebaseFirestore.instance.collection('Memo');
+CollectionReference _collectionRef2 =
+    FirebaseFirestore.instance.collection('Barang');
+
 class _memoState extends State<memo> {
   getdata() async {
-
     QuerySnapshot qs1 = await _collectionRef1.get();
     final allData1 = qs1.docs.map((doc) => doc.data()).toList();
     return allData1;
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -109,10 +105,13 @@ class _memoState extends State<memo> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
-                          var nama_barang = snapshot.data[index]["judul_memo"].toString();
-                          var ava =
-                               nama_barang.toString().substring(0, 1).toUpperCase();
-                                             return GestureDetector(
+                          var nama_barang =
+                              snapshot.data[index]["judul_memo"].toString();
+                          var ava = nama_barang
+                              .toString()
+                              .substring(0, 1)
+                              .toUpperCase();
+                          return GestureDetector(
                             onTap: () async {
                               Navigator.push(
                                 context,
@@ -132,7 +131,7 @@ class _memoState extends State<memo> {
                                   ),
                                   radius: 20,
                                   backgroundColor:
-                                      Color.fromARGB(255, 239, 248, 255),
+                                      colors.primaryLightest,
                                 ),
                                 Container(
                                   height: 56,
@@ -142,7 +141,7 @@ class _memoState extends State<memo> {
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
-                                      color: Color.fromARGB(255, 52, 64, 84),
+                                      color: colors.textPrimary,
                                     ),
                                   ),
                                   padding: EdgeInsets.only(top: 18, left: 15),
@@ -183,5 +182,4 @@ class _memoState extends State<memo> {
       backgroundColor: Colors.white,
     );
   }
-  }
-  
+}

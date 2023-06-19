@@ -4,6 +4,8 @@ import 'package:basicpos_v2/pages/main_menu.dart';
 import 'package:basicpos_v2/pages/master/supplier_cru.dart';
 import 'package:basicpos_v2/pages/master/supplier_detail.dart';
 import 'package:basicpos_v2/constants/colors.dart' as colors;
+import 'package:basicpos_v2/pages/stok/stok_cru.dart';
+import 'package:basicpos_v2/pages/stok/stok_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -17,23 +19,13 @@ class stok extends StatefulWidget {
 }
 
 class _stokState extends State<stok> {
+  CollectionReference _collectionRef =
+      FirebaseFirestore.instance.collection('Stok');
   getdata() async {
-    CollectionReference _collectionRef =
-        FirebaseFirestore.instance.collection('Stok');
     QuerySnapshot querySnapshot = await _collectionRef.get();
     final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
     return allData;
   }
-
-  // getBarangData(String id) async {
-  //   var data = [];
-  //   var document = await FirebaseFirestore.instance.collection('Barang').doc(id).get();
-
-  //   document.get().then(function(document) {
-  //     print(document("name"));
-  //   });
-  //   return document.data();
-  // }
 
   @override
   void initState() {
@@ -117,31 +109,56 @@ class _stokState extends State<stok> {
                         itemBuilder: (BuildContext context, int index) {
                           var idBarang =
                               snapshot.data[index]["id_barang"].toString();
-                          var stok_baik = int.parse(
-                              snapshot.data[index]["stok_baik"].toString());
-                          var stok_rusak = int.parse(
-                              snapshot.data[index]["stok_rusak"].toString());
-                          // var ava =
-                          //     name.toString().substring(0, 1).toUpperCase();
                           return StreamBuilder<
                               DocumentSnapshot<Map<String, dynamic>>>(
                             stream: FirebaseFirestore.instance
                                 .collection('Barang')
-                                .doc(idBarang)
+                                .doc('$idBarang')
                                 .snapshots(),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return Container(
-                                  child: Text("No Data"),
-                                );
-                              } else {
-                                var data = snapshot.data!.data();
-                                return Container(
-                                  child: Text(
-                                    data!["kode_barang"],
-                                  ),
-                                );
-                              }
+                            builder: (context, snap) {
+                              var data = snap.data?.data();
+                              var nama = data?["nama_barang"];
+                              var ava =
+                                  nama.toString().substring(0, 1).toUpperCase();
+                              return GestureDetector(
+                                onTap: () async {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                        stok_detail(index: index),
+                                    ),
+                                  );
+                                },
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      child: Text(
+                                        ava,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      radius: 20,
+                                      backgroundColor: colors.primaryLightest,
+                                    ),
+                                    Container(
+                                      height: 56,
+                                      color: Colors.white,
+                                      child: Text(
+                                        nama.toString(),
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: colors.textPrimary,
+                                        ),
+                                      ),
+                                      padding:
+                                          EdgeInsets.only(top: 18, left: 15),
+                                    ),
+                                  ],
+                                ),
+                              );
                             },
                           );
                         },
@@ -163,7 +180,7 @@ class _stokState extends State<stok> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => supplier_cru(edit: false),
+                builder: (context) => stok_cru(edit: false),
               ),
             );
           }),

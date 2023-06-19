@@ -1,4 +1,4 @@
-import 'package:basicpos_v2/pages/memo/memo.dart';
+import 'package:basicpos_v2/pages/stok/memo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';

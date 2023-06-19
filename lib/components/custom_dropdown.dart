@@ -31,7 +31,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Visibility(
-          visible: true,
+          visible: visible,
           child: Container(
             margin: EdgeInsets.symmetric(vertical: 10),
             child: Text(

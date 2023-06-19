@@ -1,4 +1,4 @@
-import 'package:basicpos_v2/pages/memo/memo.dart';
+import 'package:basicpos_v2/pages/stok/memo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:basicpos_v2/pages/master/barang.dart';
 import 'package:basicpos_v2/pages/master/brand.dart';
@@ -284,26 +284,21 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                   builder: (context) => faktur_pajak(),
                                 ),
                               );
-                            }
-                            else if (search[index].getTitle() ==
-                                "Stok") {
+                            } else if (search[index].getTitle() == "Stok") {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => stok(),
                                 ),
                               );
-                            }
-                            else if (search[index].getTitle() ==
-                                "Memo") {
+                            } else if (search[index].getTitle() == "Memo") {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => memo(),
                                 ),
                               );
-                            }
-                             else if (search[index].getTitle() == "Logout") {
+                            } else if (search[index].getTitle() == "Logout") {
                               FirebaseAuth.instance.signOut();
                             }
                           },

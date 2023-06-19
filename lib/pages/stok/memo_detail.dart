@@ -1,4 +1,4 @@
-import 'package:basicpos_v2/pages/memo/memo.dart';
+import 'package:basicpos_v2/pages/stok/memo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -27,10 +27,6 @@ class _memo_detailState extends State<memo_detail> {
 
   final CollectionReference _barang =
       FirebaseFirestore.instance.collection('Barang');
-
-
-
-
 
   getdata() async {
     QuerySnapshot querySnapshot = await _barang.get();
