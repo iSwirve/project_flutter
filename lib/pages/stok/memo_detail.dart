@@ -28,12 +28,15 @@ class _memo_detailState extends State<memo_detail> {
   final CollectionReference _barang =
       FirebaseFirestore.instance.collection('Barang');
 
+
+
+
+
   getdata() async {
-    QuerySnapshot querySnapshot = await _barang.get();
-    final dataBarang = querySnapshot.docs.map((doc) => doc.data()).toList();
+
     QuerySnapshot qs = await _memo.get();
     final dataMemo = qs.docs.map((doc) => doc.data()).toList();
-    return [dataMemo, dataBarang];
+    return dataMemo;
   }
 
   @override
@@ -82,14 +85,18 @@ class _memo_detailState extends State<memo_detail> {
           } else {
             // print(snapshot.data.runtimeType);
             var judul_memo =
-                snapshot.data[0][widget.index]["judul_memo"].toString();
+                snapshot.data[widget.index]["judul_memo"].toString();
             var nama_barang =
-                snapshot.data[1][widget.index]["nama_barang"].toString();
-            var catatan = snapshot.data[0][widget.index]["catatan"].toString();
-
+                snapshot.data[widget.index]["id_barang"].toString();
+            var catatan = snapshot.data[widget.index]["catatan"].toString();
             var qty =
-                snapshot.data[0][widget.index]["qty"].toString();
+                snapshot.data[widget.index]["qty"].toString();
 
+            return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+            stream:FirebaseFirestore.instance.collection('Barang').doc('$nama_barang').snapshots(),
+            builder: (context,sp){
+              var data = sp.data?.data();
+              var temp = data?["nama_barang"].toString();
             return SingleChildScrollView(
               child: Container(
                 margin: EdgeInsets.only(top: 10, left: 20),
@@ -101,7 +108,7 @@ class _memo_detailState extends State<memo_detail> {
                       sizedBox: SizedBox(height: 5),
                     ),
                     CustomText(
-                      text: "Nama Barang : $nama_barang",
+                      text: "Nama Barang : $temp",
                       textStyle: TextStyle(fontSize: 12),
                       sizedBox: SizedBox(height: 5),
                     ),
@@ -120,6 +127,8 @@ class _memo_detailState extends State<memo_detail> {
                   ],
                 ),
               ),
+            );
+            },
             );
           }
         },
