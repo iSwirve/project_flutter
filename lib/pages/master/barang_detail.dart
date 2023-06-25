@@ -12,9 +12,9 @@ import 'package:basicpos_v2/constants/colors.dart' as colors;
 import 'package:basicpos_v2/components/custom_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
 class barang_detail extends StatefulWidget {
   final index;
+
   const barang_detail({super.key, this.index});
 
   @override
@@ -24,6 +24,7 @@ class barang_detail extends StatefulWidget {
 class _barang_detailState extends State<barang_detail> {
   int count = 0;
   final _db = FirebaseFirestore.instance;
+
   Future<void> _delete(String productId) async {
     await _barang.doc(productId).delete();
   }
@@ -129,8 +130,7 @@ class _barang_detailState extends State<barang_detail> {
 
   var brandIDku;
 
-  Future<void> getdata2(String brandID) async
-  {
+  Future<void> getdata2(String brandID) async {
     var collection = FirebaseFirestore.instance.collection('Brand');
     var docSnapshot = await collection.doc(brandID).get();
     if (docSnapshot.exists) {
@@ -141,7 +141,6 @@ class _barang_detailState extends State<barang_detail> {
     }
   }
 
-
   final CollectionReference _brand =
       FirebaseFirestore.instance.collection('Brand');
 
@@ -150,19 +149,32 @@ class _barang_detailState extends State<barang_detail> {
 
   final CollectionReference _kategori =
       FirebaseFirestore.instance.collection('Kategori');
-
+  Map<dynamic, dynamic> brands = new Map();
+  Map<dynamic, dynamic> kategoris = new Map();
   getdata() async {
     QuerySnapshot querySnapshot = await _barang.get();
+
     final datas = querySnapshot.docs.map((doc) => doc.data()).toList();
     QuerySnapshot qs = await _brand.get();
     final dataBrand = qs.docs.map((doc) => doc.data()).toList();
 
     QuerySnapshot qs2 = await _kategori.get();
     final dataKat = qs2.docs.map((doc) => doc.data()).toList();
-    return [datas, dataBrand,dataKat];
+var ctr = 0;
+    qs.docs.forEach((element) {
+      brands[element.reference.id] = element["name"];
+          ctr++;
+    });
+    qs2.docs.forEach((element) {
+      kategoris[element.reference.id] = element["name"];
+      ctr++;
+    });
 
+    // dataBrand[0] = 1;
+    // print(qs.docs[0]["name"]);
+
+    return [datas, dataBrand, dataKat];
   }
-
 
   getId(int index) async {
     QuerySnapshot querySnapshot = await _barang.get();
@@ -216,11 +228,15 @@ class _barang_detailState extends State<barang_detail> {
             // print(snapshot.data.runtimeType);
             var nama_barang =
                 snapshot.data[0][widget.index]["nama_barang"].toString();
-            var brand = snapshot.data[1][widget.index]["name"].toString();
+
+            var brand = brands[snapshot.data[0][widget.index]["brand"].toString()];
             // var brand2 = _brand.FirebaseFirestore;
             // print(getdata2(brand));
-            var kategori_barang =
-                snapshot.data[2][widget.index]["name"].toString();
+            // for (var i = 0; i < snapshot.data[1].length; i++) {
+            //   if(snapshot.data[1][i][""])
+            // }
+            var kategori_barang = kategoris[snapshot.data[0][widget.index]["kategori_barang"].toString()];
+            // print(snapshot.data[1].docs[0].reference.id);
             var kode_barang =
                 snapshot.data[0][widget.index]["kode_barang"].toString();
             var nomor_seri =
@@ -301,9 +317,10 @@ class _barang_detailState extends State<barang_detail> {
         duration: Duration(milliseconds: 100),
         animateMenuItems: true,
         blurBackgroundColor: Color.fromARGB(127, 29, 41, 57),
-        openWithTap: true, // Open Focused-Menu on Tap rather than Long Press
-        menuOffset:
-            10.0, // Offset value to show menuItem from the selected item
+        openWithTap: true,
+        // Open Focused-Menu on Tap rather than Long Press
+        menuOffset: 10.0,
+        // Offset value to show menuItem from the selected item
         bottomOffsetHeight: 80.0,
         menuItems: <FocusedMenuItem>[
           FocusedMenuItem(
