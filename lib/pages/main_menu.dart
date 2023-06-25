@@ -1,5 +1,6 @@
 import 'package:basicpos_v2/pages/stok/memo.dart';
 import 'package:basicpos_v2/pages/transaksi/laporan%20penjualan.dart';
+import 'package:basicpos_v2/pages/transaksi/pembelian/pembelian.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:basicpos_v2/pages/master/barang.dart';
 import 'package:basicpos_v2/pages/master/brand.dart';
@@ -247,6 +248,14 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => penjualan(),
+                                ),
+                              );
+                            }else if (search[index].getTitle() ==
+                                "Pembelian") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => pembelian(),
                                 ),
                               );
                             } else if (search[index].getTitle() == "Logout") {
