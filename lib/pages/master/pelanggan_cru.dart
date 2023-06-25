@@ -146,7 +146,7 @@ class _pelanggan_cruState extends State<pelanggan_cru> {
               text: title,
               onPressed: () async {
                 Map<String, String> body;
-                int count = await FirebaseFirestore.instance.collection('Pelanggan').get().then((value) => value.size+1);
+                int count = await FirebaseFirestore.instance.collection('Pelanggan').get().then((value) => value.size);
                 body = {  
                   'alamat': alamat.text.toString(),
                   'email': email.text.toString(),
