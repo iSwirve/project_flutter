@@ -1,14 +1,11 @@
 import 'package:basicpos_v2/pages/stok/memo.dart';
+import 'package:basicpos_v2/pages/transaksi/laporan%20penjualan.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:basicpos_v2/pages/master/barang.dart';
 import 'package:basicpos_v2/pages/master/brand.dart';
 import 'package:basicpos_v2/pages/master/ekspedisi.dart';
-import 'package:basicpos_v2/pages/master/faktur_pajak.dart';
-import 'package:basicpos_v2/pages/master/jenis_biaya.dart';
 import 'package:basicpos_v2/pages/master/kategori_barang.dart';
-import 'package:basicpos_v2/pages/master/kategori_pelanggan.dart';
 import 'package:basicpos_v2/pages/master/pelanggan.dart';
-import 'package:basicpos_v2/pages/master/sales.dart';
 import 'package:basicpos_v2/pages/master/supplier.dart';
 import 'package:basicpos_v2/pages/stok/stok.dart';
 import 'package:flutter/material.dart';
@@ -68,46 +65,24 @@ class _MainMenuPageState extends State<MainMenuPage> {
     item.add(MenuList("Master", ""));
     item.add(MenuList("Master Supplier", "assets/icons/person.png"));
     item.add(MenuList("Master Pelanggan", "assets/icons/person.png"));
-    item.add(MenuList("Master Kategori Pelanggan", "assets/icons/person.png"));
-    item.add(MenuList("Master Sales", "assets/icons/person.png"));
     item.add(MenuList("Master Brand", "assets/icons/box.png"));
     item.add(MenuList("Master Barang", "assets/icons/box.png"));
     item.add(MenuList("Master Kategori Barang", "assets/icons/box.png"));
-    item.add(MenuList("Master Jenis Biaya", "assets/icons/creditcard.png"));
-    item.add(MenuList("Master Ekspedisi", "assets/icons/briefcase.png"));
-    item.add(MenuList("Master Faktur Pajak", "assets/icons/clipboard.png"));
     item.add(MenuList("Stok", ""));
     item.add(MenuList("Stok", "assets/icons/box.png"));
-    item.add(MenuList("Kartu Stok", "assets/icons/list.png"));
     item.add(MenuList("Memo", "assets/icons/book.png"));
-    item.add(MenuList("Opname", "assets/icons/send.png"));
     item.add(MenuList("Pembelian", ""));
     item.add(MenuList("Pembelian", "assets/icons/box.png"));
     item.add(MenuList("Retur Beli", "assets/icons/box.png"));
     item.add(MenuList("Penjualan", ""));
     item.add(MenuList("Penjualan", "assets/icons/box.png"));
-    item.add(MenuList("Koreksi Harga", "assets/icons/box.png"));
     item.add(MenuList("Retur Jual", "assets/icons/box.png"));
-    item.add(MenuList("Piutang", ""));
-    item.add(MenuList("Bayar Piutang", "assets/icons/dollarsign.png"));
-    item.add(MenuList("Piutang Jatuh Tempo", "assets/icons/box.png"));
-    item.add(MenuList("Tanda Terima Pending", "assets/icons/file-text.png"));
-    item.add(MenuList("Cek Belum Cair", "assets/icons/check-square.png"));
-    item.add(MenuList("Akutansi", ""));
-    item.add(MenuList("Bayar Piutang", "assets/icons/dollarsign.png"));
-    item.add(MenuList("Kas", "assets/icons/dollarsign.png"));
-    item.add(MenuList("Bank", "assets/icons/creditcard.png"));
-    item.add(MenuList("Mutasi Dana", "assets/icons/box.png"));
     item.add(MenuList("Laporan", ""));
     item.add(MenuList("History Pelanggan", "assets/icons/file.png"));
     item.add(MenuList("Pendapatan", "assets/icons/file.png"));
     item.add(MenuList("Penjualan Barang", "assets/icons/file.png"));
     item.add(MenuList("Penjualan Barang Supplier", "assets/icons/file.png"));
     item.add(MenuList("Manage", ""));
-    item.add(MenuList("Manage Role", "assets/icons/settings.png"));
-    item.add(MenuList("Manage User", "assets/icons/settings.png"));
-    item.add(MenuList("Informasi Perusahaan", "assets/icons/info.png"));
-    item.add(MenuList("Ganti Password", "assets/icons/lock.png"));
     item.add(MenuList("Logout", "assets/icons/log-out.png"));
     search.addAll(item);
   }
@@ -229,22 +204,6 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                 ),
                               );
                             } else if (search[index].getTitle() ==
-                                "Master Kategori Pelanggan") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => kategori_pelanggan(),
-                                ),
-                              );
-                            } else if (search[index].getTitle() ==
-                                "Master Sales") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => sales(),
-                                ),
-                              );
-                            } else if (search[index].getTitle() ==
                                 "Master Ekspedisi") {
                               Navigator.push(
                                 context,
@@ -268,23 +227,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                   builder: (context) => kategori_barang(),
                                 ),
                               );
-                            } else if (search[index].getTitle() ==
-                                "Master Jenis Biaya") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => jenis_biaya(),
-                                ),
-                              );
-                            } else if (search[index].getTitle() ==
-                                "Master Faktur Pajak") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => faktur_pajak(),
-                                ),
-                              );
-                            } else if (search[index].getTitle() == "Stok") {
+                            }  else if (search[index].getTitle() == "Stok") {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -296,6 +239,14 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => memo(),
+                                ),
+                              );
+                            } else if (search[index].getTitle() ==
+                                "Penjualan") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => penjualan(),
                                 ),
                               );
                             } else if (search[index].getTitle() == "Logout") {

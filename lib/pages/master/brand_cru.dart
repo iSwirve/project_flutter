@@ -1,5 +1,4 @@
 import 'package:basicpos_v2/pages/master/brand.dart';
-import 'package:basicpos_v2/pages/master/sales.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
 import 'package:basicpos_v2/constants/colors.dart' as colors;
 import 'package:fluttertoast/fluttertoast.dart';

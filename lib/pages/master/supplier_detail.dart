@@ -118,11 +118,16 @@ class _supplierState extends State<supplier_detail> {
           ),
         ),
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.black87),
-            onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => supplier()));
-            }),
+          icon: Icon(Icons.arrow_back, color: Colors.black87),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => supplier(),
+              ),
+            );
+          },
+        ),
         backgroundColor: Colors.white,
       ),
       body: SafeArea(

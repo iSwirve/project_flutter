@@ -143,7 +143,7 @@ class _kategori_barang_cruState extends State<kategori_barang_cru> {
                 if (title == "Tambah") {
                   if (nama.text.toString().isNotEmpty) {
                     FirebaseFirestore.instance.collection('Kategori').add(body);
-                  } else{
+                  } else {
                     Fluttertoast.showToast(msg: "Field tidak boleh kosong");
                   }
 
