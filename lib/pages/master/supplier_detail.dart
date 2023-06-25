@@ -1,8 +1,10 @@
 import 'package:basicpos_v2/pages/master/supplier.dart';
 import 'package:basicpos_v2/pages/master/supplier_cru.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
+import '../../components/custom_text.dart';
 import 'package:focused_menu/modals.dart';
 
 class supplier_detail extends StatefulWidget {
@@ -84,6 +86,8 @@ class _supplierState extends State<supplier_detail> {
                               color: Colors.white, fontWeight: FontWeight.w600),
                         ),
                         onPressed: () async {
+                          var id = await getId(widget.index);
+                          _delete(id);
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
@@ -104,7 +108,22 @@ class _supplierState extends State<supplier_detail> {
     );
   }
 
-  getdata() async {}
+  CollectionReference _supplier =
+      FirebaseFirestore.instance.collection('Supplier');
+  getdata() async {
+    QuerySnapshot qs = await _supplier.get();
+    final dataMemo = qs.docs.map((doc) => doc.data()).toList();
+    return dataMemo;
+  }
+
+  getId(int index) async {
+    QuerySnapshot querySnapshot = await _supplier.get();
+    return querySnapshot.docs[index].id;
+  }
+
+  Future<void> _delete(String productId) async {
+    await _supplier.doc(productId).delete();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,99 +154,40 @@ class _supplierState extends State<supplier_detail> {
         child: Align(
           alignment: Alignment.centerLeft,
           child: FutureBuilder<dynamic>(
-            future:
-                getdata(), // You can set initial data or check snapshot.hasData in the builder // Run check for a single queryRow
+            future: getdata(),
             builder: (context, AsyncSnapshot<dynamic> snapshot) {
-              var datalist = [];
               if (snapshot.hasData) {
-                datalist.add(snapshot.data);
                 return Container(
                   margin: EdgeInsets.only(top: 10, left: 20),
-                  child: Column(children: [
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(top: 7),
-                      child: Text(
-                        "Nama",
-                        style: TextStyle(
-                          fontSize: 12,
-                        ),
+                  child: Column(
+                    children: [
+                      CustomText(
+                        text: "Nama supplier : " +
+                            snapshot.data[widget.index]["nama_supplier"]
+                                .toString(),
+                        textStyle: TextStyle(fontSize: 12),
+                        sizedBox: SizedBox(height: 5),
                       ),
-                    ),
-                    SizedBox(height: 5),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(top: 7),
-                      child: Text(
-                        datalist[0]["name"] ?? "-",
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w500),
+                      CustomText(
+                        text: "Kode Supplier : " +
+                            snapshot.data[widget.index]["kode"].toString(),
+                        textStyle: TextStyle(fontSize: 12),
+                        sizedBox: SizedBox(height: 5),
                       ),
-                    ),
-                    SizedBox(height: 5),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(top: 7),
-                      child: Text(
-                        "Kode",
-                        style: TextStyle(
-                          fontSize: 12,
-                        ),
+                      CustomText(
+                        text: "Alamat : " +
+                            snapshot.data[widget.index]["alamat"].toString(),
+                        textStyle: TextStyle(fontSize: 12),
+                        sizedBox: SizedBox(height: 5),
                       ),
-                    ),
-                    SizedBox(height: 5),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(top: 7),
-                      child: Text(
-                        datalist[0]["code"] ?? "-",
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w500),
+                      CustomText(
+                        text: "Telpon : " +
+                            snapshot.data[widget.index]["telpon"].toString(),
+                        textStyle: TextStyle(fontSize: 12),
+                        sizedBox: SizedBox(height: 5),
                       ),
-                    ),
-                    SizedBox(height: 5),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(top: 7),
-                      child: Text(
-                        "Alamat",
-                        style: TextStyle(
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(top: 7),
-                      child: Text(
-                        datalist[0]["address"] ?? "-",
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(top: 7),
-                      child: Text(
-                        "Telepon",
-                        style: TextStyle(
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(top: 7),
-                      child: Text(
-                        datalist[0]["phone"] ?? "-",
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                  ]),
+                    ],
+                  ),
                 );
               }
               return Container(
@@ -304,49 +264,50 @@ class _supplierState extends State<supplier_detail> {
             },
           ),
           FocusedMenuItem(
-              backgroundColor: Colors.transparent,
-              title: Row(
-                children: [
-                  Container(
-                    padding:
-                        EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Colors.white,
-                    ),
-                    child: Text(
-                      " Ubah ",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,
-                      ),
+            backgroundColor: Colors.transparent,
+            title: Row(
+              children: [
+                Container(
+                  padding:
+                      EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Colors.white,
+                  ),
+                  child: Text(
+                    " Ubah ",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
                     ),
                   ),
-                  SizedBox(width: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      color: Colors.white,
-                    ),
-                    child: ImageIcon(
-                      size: 36,
-                      AssetImage("assets/icons/edit.png"),
-                    ),
+                ),
+                SizedBox(width: 10),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    color: Colors.white,
                   ),
-                ],
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => supplier_cru(
-                      edit: true,
-                      index: widget.index,
-                    ),
+                  child: ImageIcon(
+                    size: 36,
+                    AssetImage("assets/icons/edit.png"),
                   ),
-                );
-              }),
+                ),
+              ],
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => supplier_cru(
+                    edit: true,
+                    index: widget.index,
+                  ),
+                ),
+              );
+            },
+          ),
         ],
         onPressed: () {},
         child: Container(

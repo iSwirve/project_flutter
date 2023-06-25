@@ -5,9 +5,10 @@ import '../../constants/dimens.dart' as dimens;
 import '../../components/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 class supplier_cru extends StatefulWidget {
   final edit;
-  int? index;
+  final index;
   supplier_cru({super.key, this.edit, this.index});
 
   static const routeName = '/suppliers';
@@ -23,10 +24,19 @@ class _supplier_cruState extends State<supplier_cru> {
   TextEditingController alamat = TextEditingController();
   var title = "Tambah";
 
-  getdata() async {}
-  addData() async{
-
+  CollectionReference _supplier =
+      FirebaseFirestore.instance.collection('Supplier');
+  getdata() async {
+    QuerySnapshot querySnapshot = await _supplier.get();
+    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+    return allData;
   }
+
+  getId(int index) async {
+    QuerySnapshot querySnapshot = await _supplier.get();
+    return querySnapshot.docs[index].id;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -86,10 +96,11 @@ class _supplier_cruState extends State<supplier_cru> {
                         );
                       }
                     } else {
-                      nama.text = snapshot.data["nama"] ?? '';
-                      kode.text = snapshot.data["kode"] ?? '';
-                      telpon.text = snapshot.data["telpon"] ?? '';
-                      alamat.text = snapshot.data["alamat"] ?? '';
+                      nama.text =
+                          snapshot.data[widget.index]["nama_supplier"] ?? '';
+                      kode.text = snapshot.data[widget.index]["kode"] ?? '';
+                      telpon.text = snapshot.data[widget.index]["telpon"] ?? '';
+                      alamat.text = snapshot.data[widget.index]["alamat"] ?? '';
                     }
                   }
                   return Column(
@@ -128,13 +139,14 @@ class _supplier_cruState extends State<supplier_cru> {
                   "nama_supplier": nama.text.toString(),
                   "alamat": alamat.text.toString(),
                   "telpon": telpon.text.toString(),
-
                 };
                 if (title == "Tambah") {
                   //function
                   FirebaseFirestore.instance.collection('Supplier').add(body);
                   Fluttertoast.showToast(msg: "Success Insert");
                 } else {
+                  var id = await getId(widget.index);
+                  await _supplier.doc(id).update(body);
                   Fluttertoast.showToast(msg: "Success Update");
                 }
               },

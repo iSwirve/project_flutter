@@ -120,7 +120,7 @@ class _supplierState extends State<supplier> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      supplier_detail(index: id),
+                                      supplier_detail(index: index),
                                 ),
                               );
                             },
