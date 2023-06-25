@@ -151,6 +151,7 @@ class _barang_detailState extends State<barang_detail> {
       FirebaseFirestore.instance.collection('Kategori');
   Map<dynamic, dynamic> brands = new Map();
   Map<dynamic, dynamic> kategoris = new Map();
+
   getdata() async {
     QuerySnapshot querySnapshot = await _barang.get();
 
@@ -160,18 +161,15 @@ class _barang_detailState extends State<barang_detail> {
 
     QuerySnapshot qs2 = await _kategori.get();
     final dataKat = qs2.docs.map((doc) => doc.data()).toList();
-var ctr = 0;
+    var ctr = 0;
     qs.docs.forEach((element) {
       brands[element.reference.id] = element["name"];
-          ctr++;
+      ctr++;
     });
     qs2.docs.forEach((element) {
       kategoris[element.reference.id] = element["name"];
       ctr++;
     });
-
-    // dataBrand[0] = 1;
-    // print(qs.docs[0]["name"]);
 
     return [datas, dataBrand, dataKat];
   }
@@ -229,18 +227,21 @@ var ctr = 0;
             var nama_barang =
                 snapshot.data[0][widget.index]["nama_barang"].toString();
 
-            var brand = brands[snapshot.data[0][widget.index]["brand"].toString()];
+            var brand =
+                brands[snapshot.data[0][widget.index]["brand"].toString()];
             // var brand2 = _brand.FirebaseFirestore;
             // print(getdata2(brand));
             // for (var i = 0; i < snapshot.data[1].length; i++) {
             //   if(snapshot.data[1][i][""])
             // }
-            var kategori_barang = kategoris[snapshot.data[0][widget.index]["kategori_barang"].toString()];
+            var kategori_barang = kategoris[
+                snapshot.data[0][widget.index]["kategori_barang"].toString()];
             // print(snapshot.data[1].docs[0].reference.id);
             var kode_barang =
                 snapshot.data[0][widget.index]["kode_barang"].toString();
-            var nomor_seri =
-                snapshot.data[0][widget.index]["nomor_seri"].toString();
+            var kode_supplier =
+                snapshot.data[0][widget.index]["kode_supplier"].toString();
+
             var harga_beli =
                 snapshot.data[0][widget.index]["harga_beli"].toString();
             var harga_jual =
@@ -250,59 +251,69 @@ var ctr = 0;
             var keterangan =
                 snapshot.data[0][widget.index]["keterangan"].toString();
 
-            return SingleChildScrollView(
-              child: Container(
-                margin: EdgeInsets.only(top: 10, left: 20),
-                child: Column(
-                  children: [
-                    CustomText(
-                      text: "Kode Barang : $kode_barang",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
+            return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+              stream: FirebaseFirestore.instance
+                  .collection('Supplier')
+                  .doc('$kode_supplier')
+                  .snapshots(),
+              builder: (context, snap) {
+                var data = snap.data?.data();
+                var nama_supplier = data?["nama_supplier"];
+                return SingleChildScrollView(
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10, left: 20),
+                    child: Column(
+                      children: [
+                        CustomText(
+                          text: "Kode Barang : $kode_barang",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                        CustomText(
+                          text: "Nama Barang : $nama_barang",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                        CustomText(
+                          text: "Kategori Barang : $kategori_barang",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                        CustomText(
+                          text: "Supplier : $nama_supplier",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                        CustomText(
+                          text: "Brand : $brand",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                        CustomText(
+                          text: "Harga beli : $harga_beli",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                        CustomText(
+                          text: "Harga jual : $harga_jual",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                        CustomText(
+                          text: "Stok minimum : $stok_minimum",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                        CustomText(
+                          text: "Keterangan : $keterangan",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                      ],
                     ),
-                    CustomText(
-                      text: "Nama Barang : $nama_barang",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                    CustomText(
-                      text: "Kategori Barang : $kategori_barang",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                    CustomText(
-                      text: "Brand : $brand",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                    CustomText(
-                      text: "Nomor seri : $nomor_seri",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                    CustomText(
-                      text: "Harga beli : $harga_beli",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                    CustomText(
-                      text: "Harga jual : $harga_jual",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                    CustomText(
-                      text: "Stok minimum : $stok_minimum",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                    CustomText(
-                      text: "Keterangan : $keterangan",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             );
           }
         },

@@ -27,18 +27,15 @@ class _barang_cruState extends State<barang_cru> {
   TextEditingController kode = TextEditingController();
   SingleValueDropDownController? brand;
   SingleValueDropDownController? kategori_barang;
-  TextEditingController nomor_seri = TextEditingController();
-  TextEditingController tipe_mobil = TextEditingController();
-  TextEditingController kode_supplier = TextEditingController();
+  SingleValueDropDownController? supplier;
   TextEditingController stok_minimum = TextEditingController();
   TextEditingController satuan = TextEditingController();
-  TextEditingController isi_per_karton = TextEditingController();
-  TextEditingController satuan_karton = TextEditingController();
   TextEditingController harga_beli = TextEditingController();
   TextEditingController harga_jual = TextEditingController();
   TextEditingController keterangan = TextEditingController();
   Map<dynamic, dynamic> BrandData = {};
   Map<dynamic, dynamic> KategoriData = {};
+  Map<dynamic, dynamic> SupplierData = {};
   var title = "Tambah";
 
   CollectionReference _collectionRef =
@@ -47,11 +44,14 @@ class _barang_cruState extends State<barang_cru> {
       FirebaseFirestore.instance.collection('Kategori');
   CollectionReference _collectionRef3 =
       FirebaseFirestore.instance.collection('Barang');
+  CollectionReference _collectionRef4 =
+      FirebaseFirestore.instance.collection('Supplier');
 
   getdata() async {
     QuerySnapshot querySnapshot = await _collectionRef.get();
     QuerySnapshot querySnapshot2 = await _collectionRef2.get();
     QuerySnapshot querySnapshot3 = await _collectionRef3.get();
+    QuerySnapshot querySnapshot4 = await _collectionRef4.get();
 
     final allData = querySnapshot3.docs.map((doc) => doc.data()).toList();
     var ctr = 0;
@@ -63,6 +63,12 @@ class _barang_cruState extends State<barang_cru> {
     ctr = 0;
     querySnapshot2.docs.forEach((element) {
       KategoriData[element.id] = querySnapshot2.docs[ctr]["name"].toString();
+      ctr++;
+    });
+    ctr = 0;
+    querySnapshot4.docs.forEach((element) {
+      SupplierData[element.id] =
+          querySnapshot4.docs[ctr]["nama_supplier"].toString();
       ctr++;
     });
 
@@ -140,8 +146,6 @@ class _barang_cruState extends State<barang_cru> {
                           snapshot.data[widget.index]["nama_barang"] ?? '-';
                       kode.text =
                           snapshot.data[widget.index]["kode_barang"] ?? '-';
-                      kode_supplier.text =
-                          snapshot.data[widget.index]["kode_supplier"] ?? '-';
                       stok_minimum.text =
                           (snapshot.data[widget.index]["stok_minimum"] ?? 0)
                               .toString();
@@ -191,15 +195,16 @@ class _barang_cruState extends State<barang_cru> {
                               ),
                             ),
                           ),
-                          CustomTextField(
-                            text_controller: kode_supplier,
-                            hintText: "Kode Supplier",
-                            title: "Kode Supplier",
-                          ),
-                          CustomTextField(
-                            text_controller: nomor_seri,
-                            hintText: "Nomor Seri",
-                            title: "Nomor Seri",
+                          CustomDropdown(
+                            title: "Supplier",
+                            list: SupplierData,
+                            controller: supplier =
+                                SingleValueDropDownController(
+                              data: DropDownValueModel(
+                                name: "Supplier",
+                                value: "Supplier",
+                              ),
+                            ),
                           ),
                           CustomTextField(
                             text_controller: stok_minimum,
@@ -241,7 +246,7 @@ class _barang_cruState extends State<barang_cru> {
                   'nama_barang': nama.text.toString(),
                   'harga_beli': harga_beli.text.toString(),
                   'harga_jual': harga_jual.text.toString(),
-                  'kode_supplier': kode_supplier.text.toString(),
+                  'kode_supplier': supplier!.dropDownValue!.value.toString(),
                   'keterangan': keterangan.text.toString(),
                   'stok_minimum': stok_minimum.text.toString(),
                 };
