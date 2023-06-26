@@ -12,7 +12,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class kategori_barang_cru extends StatefulWidget {
   final edit;
-  int? index;
+  final index;
 
   kategori_barang_cru({super.key, this.edit, this.index});
 
@@ -29,12 +29,19 @@ class _kategori_barang_cruState extends State<kategori_barang_cru> {
 
   var title = "Tambah";
 
+  CollectionReference _collectionRef3 =
+  FirebaseFirestore.instance.collection('Kategori');
   getdata() async {
-    try {
-      if (title == "Edit") {}
-    } catch (e) {
-      return [];
-    }
+    QuerySnapshot querySnapshot = await _collectionRef3.get();
+
+    final dataBrand = querySnapshot.docs.map((doc) => doc.data()).toList();
+    return dataBrand;
+    return querySnapshot;
+  }
+
+  getId(int index) async {
+    QuerySnapshot querySnapshot = await _collectionRef3.get();
+    return querySnapshot.docs[index].id;
   }
 
   @override
@@ -97,7 +104,7 @@ class _kategori_barang_cruState extends State<kategori_barang_cru> {
                         );
                       }
                     } else {
-                      nama.text = snapshot.data["name"] ?? '';
+                      nama.text =  snapshot.data[widget.index]["name"] ?? '';;
                     }
                   }
                   return Column(
@@ -149,7 +156,13 @@ class _kategori_barang_cruState extends State<kategori_barang_cru> {
 
                   Fluttertoast.showToast(msg: "Success Insert");
                 } else {
-                  Fluttertoast.showToast(msg: "Success Update");
+                  if (nama.text.toString().isNotEmpty) {
+                    var id = await getId(widget.index);
+                    await _collectionRef3.doc(id).update(body);
+                    Fluttertoast.showToast(msg: "Success Update");
+                  } else {
+                    Fluttertoast.showToast(msg: "Field tidak boleh kosong");
+                  }
                 }
               },
             ),

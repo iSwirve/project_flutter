@@ -1,9 +1,12 @@
 import 'package:basicpos_v2/pages/master/kategori_barang.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
 import 'package:basicpos_v2/pages/master/kategori_barang_cru.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+
+import '../../components/custom_text.dart';
 
 class kategori_barang_detail extends StatefulWidget {
   final index;
@@ -106,10 +109,22 @@ class _kategori_barangState extends State<kategori_barang_detail> {
     );
   }
 
-  getdata() async {
-    
-  }
+  CollectionReference _collectionRef =
+  FirebaseFirestore.instance.collection('Kategori');
+  Map<dynamic, dynamic> kategori = new Map();
 
+  getdata() async {
+    QuerySnapshot qs = await _collectionRef.get();
+    var ctr = 0;
+    qs.docs.forEach((element) {
+      kategori[ctr] = element["name"];
+      ctr++;
+    });
+
+    final dataBrand = qs.docs.map((doc) => doc.data()).toList();
+    return dataBrand;
+    //
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -158,8 +173,10 @@ class _kategori_barangState extends State<kategori_barang_detail> {
                   );
                 }
               } else {
+
+                var kate = kategori[widget.index];
                 var statuspkp = "tidak";
-                if (snapshot.data["taxpayer"] == 1) statuspkp = "ya";
+                // if (snapshot.data["taxpayer"] == 1) statuspkp = "ya";
                 return Container(
                   child: Container(
                     margin: EdgeInsets.only(top: 10, left: 20),
@@ -180,12 +197,10 @@ class _kategori_barangState extends State<kategori_barang_detail> {
                         Container(
                           alignment: Alignment.centerLeft,
                           margin: EdgeInsets.only(top: 7),
-                          child: Text(
-                            snapshot.data["name"] ?? " - ",
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
+                          child: CustomText(
+                            text: "Kategori : $kate",
+                            textStyle: TextStyle(fontSize: 12),
+                            sizedBox: SizedBox(height: 5),
                           ),
                         ),
                       ],

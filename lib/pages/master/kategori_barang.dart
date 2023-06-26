@@ -123,7 +123,7 @@ class _kategoribarangState extends State<kategori_barang> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      kategori_barang_detail(index: count),
+                                      kategori_barang_detail(index: index),
                                 ),
                               );
                             },
