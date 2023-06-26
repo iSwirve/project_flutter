@@ -10,9 +10,6 @@ import '../../../constants/colors.dart' as colors;
 import '../../../components/custom_dropdown.dart';
 import '../../../components/custom_text_field.dart';
 
-
-
-
 class pembelian_cru extends StatefulWidget {
   final edit;
   final index;
@@ -26,8 +23,8 @@ class _pembelian_cruState extends State<pembelian_cru> {
   var title = 'tambah';
   var idBarang = "";
   CollectionReference _barang = FirebaseFirestore.instance.collection('Barang');
-  CollectionReference _supplier =FirebaseFirestore.instance.collection('Supplier');
-  CollectionReference _pembelian =FirebaseFirestore.instance.collection('Pembelian');
+  CollectionReference _supplier = FirebaseFirestore.instance.collection('Supplier');
+  CollectionReference _pembelian = FirebaseFirestore.instance.collection('Pembelian');
 
   SingleValueDropDownController? barang;
   SingleValueDropDownController? supplier;
@@ -38,12 +35,9 @@ class _pembelian_cruState extends State<pembelian_cru> {
 
   Map<dynamic, dynamic> barang_data = {};
   Map<dynamic, dynamic> supplier_data = {};
-  Map<dynamic, dynamic> statusppn_data = {
-    "0" : "Tidak Aktif",
-    "1":"Aktif"
-  };
+  Map<dynamic, dynamic> statusppn_data = {"0": "Tidak Aktif", "1": "Aktif"};
 
- getdata() async {
+  getdata() async {
     QuerySnapshot querySnapshot = await _pembelian.get();
     QuerySnapshot querySnapshot1 = await _barang.get();
     QuerySnapshot querySnapshot2 = await _supplier.get();
@@ -53,18 +47,16 @@ class _pembelian_cruState extends State<pembelian_cru> {
     var ctr = 0;
     querySnapshot1.docs.forEach(
       (element) {
-        barang_data[element.id] =
-            querySnapshot1.docs[ctr]["nama_barang"].toString();
+        barang_data[element.id] = querySnapshot1.docs[ctr]["nama_barang"].toString();
         ctr++;
       },
     );
 
     ctr = 0;
-    
+
     querySnapshot2.docs.forEach(
       (element) {
-        supplier_data[element.id] =
-            querySnapshot2.docs[ctr]["nama_supplier"].toString();
+        supplier_data[element.id] = querySnapshot2.docs[ctr]["nama_supplier"].toString();
         ctr++;
       },
     );
@@ -78,7 +70,6 @@ class _pembelian_cruState extends State<pembelian_cru> {
     QuerySnapshot querySnapshot = await _pembelian.get();
     return querySnapshot.docs[index].id;
   }
-
 
   @override
   void initState() {
@@ -124,10 +115,7 @@ class _pembelian_cruState extends State<pembelian_cru> {
                 initialData: {},
                 future: getdata(),
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                  if (!snapshot.hasData ||
-                      snapshot.data == null ||
-                      snapshot.data.isEmpty ||
-                      snapshot.hasError) {
+                  if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
                     if (snapshot.data == {}) {
                       return Container();
                     } else {
@@ -142,19 +130,16 @@ class _pembelian_cruState extends State<pembelian_cru> {
                     }
                   } else {
                     if (title == "Edit") {
-                    // 'id_barang': barang!.dropDownValue!.value.toString(),
-                    // 'id_supplier': supplier!.dropDownValue!.value.toString(),
-                    // 'tanggal': tanggal.text.toString(),
-                    // 'tanggal_tempo' : tanggal_tempo.text.toString(),
-                    // 'tanggal_terima' : tanggal_terima.text.toString(),
-                    // 'status_ppn' : statusppn!.dropDownValue!.value.toString()
-                    tanggal.text = 
-                             snapshot.data[widget.index]["tanggal"] ?? '-';
-                    tanggal_tempo.text = 
-                             snapshot.data[widget.index]["tanggal_tempo"] ?? '-';
-                    tanggal_terima.text = 
-                             snapshot.data[widget.index]["tanggal_terima"] ?? '-';
-                      
+                      // 'id_barang': barang!.dropDownValue!.value.toString(),
+                      // 'id_supplier': supplier!.dropDownValue!.value.toString(),
+                      // 'tanggal': tanggal.text.toString(),
+                      // 'tanggal_tempo' : tanggal_tempo.text.toString(),
+                      // 'tanggal_terima' : tanggal_terima.text.toString(),
+                      // 'status_ppn' : statusppn!.dropDownValue!.value.toString()
+                      tanggal.text = snapshot.data[widget.index]["tanggal"] ?? '-';
+                      tanggal_tempo.text = snapshot.data[widget.index]["tanggal_tempo"] ?? '-';
+                      tanggal_terima.text = snapshot.data[widget.index]["tanggal_terima"] ?? '-';
+
                       // pelanggan.text =
                       //     snapshot.data[widget.index]["stok_baik"] ?? '-';
                       // tanggal.text =
@@ -162,6 +147,58 @@ class _pembelian_cruState extends State<pembelian_cru> {
                       // idBarang =
                       //     snapshot.data[widget.index]["id_barang"].toString();
 
+                      return SingleChildScrollView(
+                        child: Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomTextField(
+                                text_controller: tanggal,
+                                hintText: "Tanggal",
+                                title: "Tanggal",
+                              ),
+                              CustomTextField(
+                                text_controller: tanggal_tempo,
+                                hintText: "Tanggal Jatuh Tempo",
+                                title: "Tanggal Jatuh Tempo",
+                              ),
+                              CustomTextField(
+                                text_controller: tanggal_terima,
+                                hintText: "Tanggal Terima",
+                                title: "Tanggal Terima",
+                              ),
+                              CustomDropdown(
+                                title: "Supplier",
+                                list: supplier_data,
+                                controller: supplier = SingleValueDropDownController(
+                                  data: DropDownValueModel(
+                                    name: "Supplier",
+                                    value: "Supplier",
+                                  ),
+                                ),
+                              ),
+                              CustomDropdown(
+                                title: "Barang",
+                                list: barang_data,
+                                controller: barang = SingleValueDropDownController(
+                                  data: DropDownValueModel(
+                                    name: "Barang",
+                                    value: "Barang",
+                                  ),
+                                ),
+                              ),
+                              CustomDropdown(
+                                title: "Status PPN",
+                                list: statusppn_data,
+                                controller: statusppn = SingleValueDropDownController(
+                                    data: DropDownValueModel(name: "Status PPN", value: "Status PPN")),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                  }
                   return SingleChildScrollView(
                     child: Expanded(
                       child: Column(
@@ -206,62 +243,7 @@ class _pembelian_cruState extends State<pembelian_cru> {
                             title: "Status PPN",
                             list: statusppn_data,
                             controller: statusppn = SingleValueDropDownController(
-                              data: DropDownValueModel(name: "Status PPN",value: "Status PPN")
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-              }
-
-                  return SingleChildScrollView(
-                    child: Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomTextField(
-                            text_controller: tanggal,
-                            hintText: "Tanggal",
-                            title: "Tanggal",
-                          ),
-                          CustomTextField(
-                            text_controller: tanggal_tempo,
-                            hintText: "Tanggal Jatuh Tempo",
-                            title: "Tanggal Jatuh Tempo",
-                          ),
-                          CustomTextField(
-                            text_controller: tanggal_terima,
-                            hintText: "Tanggal Terima",
-                            title: "Tanggal Terima",
-                          ),
-                          CustomDropdown(
-                            title: "Supplier",
-                            list: supplier_data,
-                            controller: supplier = SingleValueDropDownController(
-                              data: DropDownValueModel(
-                                name: "Supplier",
-                                value: "Supplier",
-                              ),
-                            ),
-                          ),
-                          CustomDropdown(
-                            title: "Barang",
-                            list: barang_data,
-                            controller: barang = SingleValueDropDownController(
-                              data: DropDownValueModel(
-                                name: "Barang",
-                                value: "Barang",
-                              ),
-                            ),
-                          ),
-                          CustomDropdown(
-                            title: "Status PPN",
-                            list: statusppn_data,
-                            controller: statusppn = SingleValueDropDownController(
-                              data: DropDownValueModel(name: "Status PPN",value: "Status PPN")
-                            ),
+                                data: DropDownValueModel(name: "Status PPN", value: "Status PPN")),
                           ),
                         ],
                       ),
@@ -280,9 +262,9 @@ class _pembelian_cruState extends State<pembelian_cru> {
                     'id_barang': barang!.dropDownValue!.value.toString(),
                     'id_supplier': supplier!.dropDownValue!.value.toString(),
                     'tanggal': tanggal.text.toString(),
-                    'tanggal_tempo' : tanggal_tempo.text.toString(),
-                    'tanggal_terima' : tanggal_terima.text.toString(),
-                    'status_ppn' : statusppn!.dropDownValue!.value.toString()
+                    'tanggal_tempo': tanggal_tempo.text.toString(),
+                    'tanggal_terima': tanggal_terima.text.toString(),
+                    'status_ppn': statusppn!.dropDownValue!.value.toString()
                   };
                   if (barang!.dropDownValue!.name == "Barang" || supplier!.dropDownValue!.name == "Supplier")
                     Fluttertoast.showToast(msg: "Silahkan pilih combobox");
@@ -298,9 +280,9 @@ class _pembelian_cruState extends State<pembelian_cru> {
                     'id_barang': barang!.dropDownValue!.value.toString(),
                     'id_supplier': supplier!.dropDownValue!.value.toString(),
                     'tanggal': tanggal.text.toString(),
-                    'tanggal_tempo' : tanggal_tempo.text.toString(),
-                    'tanggal_terima' : tanggal_terima.text.toString(),
-                    'status_ppn' : statusppn!.dropDownValue!.value.toString()
+                    'tanggal_tempo': tanggal_tempo.text.toString(),
+                    'tanggal_terima': tanggal_terima.text.toString(),
+                    'status_ppn': statusppn!.dropDownValue!.value.toString()
                   };
                   if (barang!.dropDownValue!.name == "Barang" || supplier!.dropDownValue!.name == "Supplier")
                     Fluttertoast.showToast(msg: "Silahkan pilih combobox");
