@@ -1,4 +1,5 @@
 import 'package:basicpos_v2/pages/transaksi/pembelian/pembelian_cru.dart';
+import 'package:basicpos_v2/pages/transaksi/pembelian/pembelian_detail.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'dart:convert';
@@ -118,13 +119,13 @@ class _pembelianState extends State<pembelian> {
                                   .toUpperCase();
                               return GestureDetector(
                                 onTap: () async {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) =>
-                                  //         stok_detail(index: index),
-                                  //   ),
-                                  // );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          pembelian_detail(index: index),
+                                    ),
+                                  );
                                 },
                                 child: Row(
                                   children: [
