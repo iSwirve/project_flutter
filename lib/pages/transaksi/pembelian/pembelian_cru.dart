@@ -74,6 +74,12 @@ class _pembelian_cruState extends State<pembelian_cru> {
     return allData;
   }
 
+  getId(int index) async {
+    QuerySnapshot querySnapshot = await _pembelian.get();
+    return querySnapshot.docs[index].id;
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -136,33 +142,79 @@ class _pembelian_cruState extends State<pembelian_cru> {
                     }
                   } else {
                     if (title == "Edit") {
+                    // 'id_barang': barang!.dropDownValue!.value.toString(),
+                    // 'id_supplier': supplier!.dropDownValue!.value.toString(),
+                    // 'tanggal': tanggal.text.toString(),
+                    // 'tanggal_tempo' : tanggal_tempo.text.toString(),
+                    // 'tanggal_terima' : tanggal_terima.text.toString(),
+                    // 'status_ppn' : statusppn!.dropDownValue!.value.toString()
+                    tanggal.text = 
+                             snapshot.data[widget.index]["tanggal"] ?? '-';
+                    tanggal_tempo.text = 
+                             snapshot.data[widget.index]["tanggal_tempo"] ?? '-';
+                    tanggal_terima.text = 
+                             snapshot.data[widget.index]["tanggal_terima"] ?? '-';
+                      
                       // pelanggan.text =
                       //     snapshot.data[widget.index]["stok_baik"] ?? '-';
                       // tanggal.text =
                       //     snapshot.data[widget.index]["stok_rusak"] ?? '-';
                       // idBarang =
                       //     snapshot.data[widget.index]["id_barang"].toString();
-                      // return SingleChildScrollView(
-                      //   child: Expanded(
-                      //     child: Column(
-                      //       crossAxisAlignment: CrossAxisAlignment.start,
-                      //       children: [
-                      //         CustomTextField(
-                      //           text_controller: pelanggan,
-                      //           hintText: "Stok Baik",
-                      //           title: "Stok Baik",
-                      //         ),
-                      //         CustomTextField(
-                      //           text_controller: tanggal,
-                      //           hintText: "Stok Rusak",
-                      //           title: "Stok Rusak",
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // );
-                    }
-                  }
+
+                  return SingleChildScrollView(
+                    child: Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomTextField(
+                            text_controller: tanggal,
+                            hintText: "Tanggal",
+                            title: "Tanggal",
+                          ),
+                          CustomTextField(
+                            text_controller: tanggal_tempo,
+                            hintText: "Tanggal Jatuh Tempo",
+                            title: "Tanggal Jatuh Tempo",
+                          ),
+                          CustomTextField(
+                            text_controller: tanggal_terima,
+                            hintText: "Tanggal Terima",
+                            title: "Tanggal Terima",
+                          ),
+                          CustomDropdown(
+                            title: "Supplier",
+                            list: supplier_data,
+                            controller: supplier = SingleValueDropDownController(
+                              data: DropDownValueModel(
+                                name: "Supplier",
+                                value: "Supplier",
+                              ),
+                            ),
+                          ),
+                          CustomDropdown(
+                            title: "Barang",
+                            list: barang_data,
+                            controller: barang = SingleValueDropDownController(
+                              data: DropDownValueModel(
+                                name: "Barang",
+                                value: "Barang",
+                              ),
+                            ),
+                          ),
+                          CustomDropdown(
+                            title: "Status PPN",
+                            list: statusppn_data,
+                            controller: statusppn = SingleValueDropDownController(
+                              data: DropDownValueModel(name: "Status PPN",value: "Status PPN")
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+              }
 
                   return SingleChildScrollView(
                     child: Expanded(
@@ -241,14 +293,23 @@ class _pembelian_cruState extends State<pembelian_cru> {
                     await _pembelian.add(body);
                   }
                 } else {
-                  // body = {
-                  //   'id_barang': idBarang,
-                  //   'stok_baik': stok_baik.text.toString(),
-                  //   'stok_rusak': stok_rusak.text.toString(),
-                  // };
-                  // var id = await getId(widget.index);
-                  // await _pelanggan.doc(id).update(body);
-                  // Fluttertoast.showToast(msg: "Sukses update");
+                  var id = await getId(widget.index);
+                  body = {
+                    'id_barang': barang!.dropDownValue!.value.toString(),
+                    'id_supplier': supplier!.dropDownValue!.value.toString(),
+                    'tanggal': tanggal.text.toString(),
+                    'tanggal_tempo' : tanggal_tempo.text.toString(),
+                    'tanggal_terima' : tanggal_terima.text.toString(),
+                    'status_ppn' : statusppn!.dropDownValue!.value.toString()
+                  };
+                  if (barang!.dropDownValue!.name == "Barang" || supplier!.dropDownValue!.name == "Supplier")
+                    Fluttertoast.showToast(msg: "Silahkan pilih combobox");
+                  else if (barang!.dropDownValue!.name == "Barang")
+                    Fluttertoast.showToast(msg: "Barang harus dipilih");
+                  else {
+                    Fluttertoast.showToast(msg: "Sukses Update !!");
+                    await _pembelian.doc(id).update(body);
+                  }
                 }
               },
             ),
