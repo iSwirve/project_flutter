@@ -6,6 +6,8 @@ import 'package:basicpos_v2/pages/master/supplier_detail.dart';
 import 'package:basicpos_v2/constants/colors.dart' as colors;
 import 'package:basicpos_v2/pages/stok/stok_cru.dart';
 import 'package:basicpos_v2/pages/stok/stok_detail.dart';
+import 'package:basicpos_v2/pages/transaksi/penjualan/penjualan.dart';
+import 'package:basicpos_v2/pages/transaksi/penjualan/penjualan_cru.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -183,12 +185,12 @@ class _penjualanState extends State<penjualan> {
         margin: const EdgeInsets.only(bottom: 40, right: 20),
         child: FloatingActionButton(
           onPressed: (() {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => stok_cru(edit: false),
-            //   ),
-            // );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => penjualan_cru(edit: false),
+              ),
+            );
           }),
           child: const Icon(Icons.add),
           shape: RoundedRectangleBorder(

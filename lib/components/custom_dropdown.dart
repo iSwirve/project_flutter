@@ -8,8 +8,8 @@ void getValue(String value) {}
 class CustomDropdown extends StatefulWidget {
   Map<dynamic, dynamic>? list;
   String? title;
-  SingleValueDropDownController? controller = SingleValueDropDownController(
-      data: DropDownValueModel(name: "-", value: '-'));
+  SingleValueDropDownController? controller =
+      SingleValueDropDownController(data: DropDownValueModel(name: "-", value: '-'));
 
   CustomDropdown({
     super.key,
@@ -87,7 +87,6 @@ class _CustomDropdownState extends State<CustomDropdown> {
           ],
           onChanged: (val) {},
         ),
-        
       ],
     );
   }

@@ -18,10 +18,8 @@ class memo extends StatefulWidget {
   State<memo> createState() => _memoState();
 }
 
-CollectionReference _collectionRef1 =
-    FirebaseFirestore.instance.collection('Memo');
-CollectionReference _collectionRef2 =
-    FirebaseFirestore.instance.collection('Barang');
+CollectionReference _collectionRef1 = FirebaseFirestore.instance.collection('Memo');
+CollectionReference _collectionRef2 = FirebaseFirestore.instance.collection('Barang');
 
 class _memoState extends State<memo> {
   getdata() async {
@@ -87,10 +85,7 @@ class _memoState extends State<memo> {
                 initialData: [],
                 future: getdata(), // Run check for a single queryRow
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                  if (!snapshot.hasData ||
-                      snapshot.data == null ||
-                      snapshot.data.isEmpty ||
-                      snapshot.hasError) {
+                  if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
                     return Container(
                       height: MediaQuery.of(context).size.height - 200,
                       child: Center(
@@ -105,19 +100,14 @@ class _memoState extends State<memo> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
-                          var nama_barang =
-                              snapshot.data[index]["judul_memo"].toString();
-                          var ava = nama_barang
-                              .toString()
-                              .substring(0, 1)
-                              .toUpperCase();
+                          var nama_barang = snapshot.data[index]["judul_memo"].toString();
+                          var ava = nama_barang.toString().substring(0, 1).toUpperCase();
                           return GestureDetector(
                             onTap: () async {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      memo_detail(index: index),
+                                  builder: (context) => memo_detail(index: index),
                                 ),
                               );
                             },
@@ -126,12 +116,10 @@ class _memoState extends State<memo> {
                                 CircleAvatar(
                                   child: Text(
                                     ava,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w500),
+                                    style: TextStyle(fontWeight: FontWeight.w500),
                                   ),
                                   radius: 20,
-                                  backgroundColor:
-                                      colors.primaryLightest,
+                                  backgroundColor: colors.primaryLightest,
                                 ),
                                 Container(
                                   height: 56,
