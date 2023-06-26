@@ -117,7 +117,7 @@ class _pelangganState extends State<pelanggan> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      pelanggan_detail(index: id),
+                                      pelanggan_detail(index: index),
                                 ),
                               );
                             },

@@ -18,6 +18,13 @@ class brand_detail extends StatefulWidget {
 }
 
 class _brandState extends State<brand_detail> {
+
+  final CollectionReference _brand =
+  FirebaseFirestore.instance.collection('Brand');
+
+  Future<void> _delete(String productId) async {
+    await _brand.doc(productId).delete();
+  }
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
@@ -94,7 +101,8 @@ class _brandState extends State<brand_detail> {
                               color: Colors.white, fontWeight: FontWeight.w600),
                         ),
                         onPressed: () async {
-                          var id = widget.index;
+                          var id = await getId(widget.index);
+                          _delete(id);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -117,6 +125,12 @@ class _brandState extends State<brand_detail> {
   CollectionReference _collectionRef =
       FirebaseFirestore.instance.collection('Brand');
   Map<dynamic, dynamic> brands = new Map();
+
+
+  getId(int index) async {
+    QuerySnapshot querySnapshot = await _collectionRef.get();
+    return querySnapshot.docs[index].id;
+  }
 
   getdata() async {
     QuerySnapshot qs = await _collectionRef.get();

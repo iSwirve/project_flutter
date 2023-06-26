@@ -25,6 +25,7 @@ class _pelangganState extends State<pelanggan_detail> {
   Future<void> _delete(String id) async {
     await _Pelanggan.doc(id).delete();
   }
+
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
@@ -98,7 +99,10 @@ class _pelangganState extends State<pelanggan_detail> {
                           ),
                         ),
                         onPressed: () async {
+                          var id = await getId(widget.index);
+                          _delete(id);
                           Navigator.push(
+
                             context,
                             MaterialPageRoute(
                               builder: (context) => pelanggan(),
@@ -117,13 +121,15 @@ class _pelangganState extends State<pelanggan_detail> {
     );
   }
 
+  Map<dynamic, dynamic> dataPelanggan = new Map();
+
   final CollectionReference _Pelanggan =
       FirebaseFirestore.instance.collection('Pelanggan');
 
   getdata() async {
     QuerySnapshot querySnapshot = await _Pelanggan.get();
     final datas = querySnapshot.docs.map((doc) => doc.data()).toList();
-   
+    print(widget.index);
     return datas;
   }
 
@@ -179,11 +185,11 @@ class _pelangganState extends State<pelanggan_detail> {
                   );
                 }
               } else {
-                var nama_depan =snapshot.data[int.parse(widget.index)]["nama_depan"].toString();
-                var nama_belakang = snapshot.data[int.parse(widget.index)]["nama_belakang"].toString();
-                var alamat =snapshot.data[int.parse(widget.index)]["alamat"].toString();
-                var telepon =snapshot.data[int.parse(widget.index)]["telepon"].toString();
-                var email =snapshot.data[int.parse(widget.index)]["email"].toString();
+                var nama_depan =snapshot.data[widget.index]["nama_depan"].toString();
+                var nama_belakang = snapshot.data[widget.index]["nama_belakang"].toString();
+                var alamat =snapshot.data[widget.index]["alamat"].toString();
+                var telepon =snapshot.data[widget.index]["telepon"].toString();
+                var email =snapshot.data[widget.index]["email"].toString();
                 return SingleChildScrollView(
                   child: Container(
                   margin: EdgeInsets.only(top: 10, left: 20),

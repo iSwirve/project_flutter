@@ -18,6 +18,14 @@ class kategori_barang_detail extends StatefulWidget {
 
 class _kategori_barangState extends State<kategori_barang_detail> {
   int count = 0;
+
+  final CollectionReference _kategori =
+  FirebaseFirestore.instance.collection('Kategori');
+
+  Future<void> _delete(String productId) async {
+    await _kategori.doc(productId).delete();
+  }
+
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
@@ -90,6 +98,8 @@ class _kategori_barangState extends State<kategori_barang_detail> {
                               color: Colors.white, fontWeight: FontWeight.w600),
                         ),
                         onPressed: () async {
+                          var id = await getId(widget.index);
+                          _delete(id);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -125,6 +135,12 @@ class _kategori_barangState extends State<kategori_barang_detail> {
     return dataBrand;
     //
   }
+
+  getId(int index) async {
+    QuerySnapshot querySnapshot = await _kategori.get();
+    return querySnapshot.docs[index].id;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
