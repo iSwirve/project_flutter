@@ -10,7 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class brand_cru extends StatefulWidget {
   final edit;
-  int? index;
+  final index;
 
   brand_cru({super.key, this.edit, this.index});
 
@@ -24,9 +24,19 @@ class _brand_cruState extends State<brand_cru> {
   TextEditingController nama = TextEditingController();
 
   var title = "Tambah";
+  CollectionReference _collectionRef3 =
+  FirebaseFirestore.instance.collection('Brand');
+  getdata() async {
+    QuerySnapshot querySnapshot = await _collectionRef3.get();
 
-  getdata() async {}
-
+    final dataBrand = querySnapshot.docs.map((doc) => doc.data()).toList();
+    return dataBrand;
+    return querySnapshot;
+  }
+  getId(int index) async {
+    QuerySnapshot querySnapshot = await _collectionRef3.get();
+    return querySnapshot.docs[index].id;
+  }
   @override
   void initState() {
     super.initState();
@@ -86,7 +96,7 @@ class _brand_cruState extends State<brand_cru> {
                         );
                       }
                     } else {
-                      nama.text = snapshot.data["nama"] ?? '';
+                      nama.text = snapshot.data[widget.index]["name"] ?? '';
                     }
                   }
                   return Column(
@@ -117,7 +127,13 @@ class _brand_cruState extends State<brand_cru> {
                     Fluttertoast.showToast(msg: "Field tidak boleh kosong");
                   }
                 } else {
-                  Fluttertoast.showToast(msg: "Success Update");
+                  if (nama.text.toString().isNotEmpty) {
+                    var id = await getId(widget.index);
+                    await _collectionRef3.doc(id).update(body);
+                    Fluttertoast.showToast(msg: "Success Update");
+                  } else {
+                    Fluttertoast.showToast(msg: "Field tidak boleh kosong");
+                  }
                 }
               },
             ),

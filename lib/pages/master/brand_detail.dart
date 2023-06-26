@@ -6,8 +6,11 @@ import 'package:focused_menu/modals.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../components/custom_text.dart';
+
 class brand_detail extends StatefulWidget {
   final index;
+
   const brand_detail({super.key, this.index});
 
   @override
@@ -111,15 +114,28 @@ class _brandState extends State<brand_detail> {
     );
   }
 
+  CollectionReference _collectionRef =
+      FirebaseFirestore.instance.collection('Brand');
+  Map<dynamic, dynamic> brands = new Map();
+
   getdata() async {
-    FirebaseFirestore.instance.collection('Supplier');
+    QuerySnapshot qs = await _collectionRef.get();
+    var ctr = 0;
+    qs.docs.forEach((element) {
+      brands[ctr] = element["name"];
+      ctr++;
+    });
+
+    final dataBrand = qs.docs.map((doc) => doc.data()).toList();
+    return dataBrand;
+    // print(widget.index);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0, 
+        elevation: 0,
         title: const Text(
           "Detail brand",
           style: TextStyle(
@@ -144,12 +160,15 @@ class _brandState extends State<brand_detail> {
         child: Align(
           alignment: Alignment.centerLeft,
           child: FutureBuilder<dynamic>(
-            future:
-                getdata(), // You can set initial data or check snapshot.hasData in the builder // Run check for a single queryRow
+            future: getdata(),
+            // You can set initial data or check snapshot.hasData in the builder // Run check for a single queryRow
             builder: (context, AsyncSnapshot<dynamic> snapshot) {
               var datalist = [];
               if (snapshot.hasData) {
                 datalist.add(snapshot.data);
+                // print(snapshot.data[widget.index]["name"]);
+                print(brands[widget.index]);
+                var brand = brands[widget.index];
                 return Container(
                   margin: EdgeInsets.only(top: 10, left: 20),
                   child: Column(
@@ -166,16 +185,16 @@ class _brandState extends State<brand_detail> {
                       ),
                       SizedBox(height: 5),
                       Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 7),
-                        child: Text(
-                          datalist[0]["name"] ?? "-",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
+                          alignment: Alignment.centerLeft,
+                          margin: EdgeInsets.only(top: 7),
+                          child: Column(children: [
+                            CustomText(
+                              text: "Nama Brand : $brand",
+                              //+ brands[widget.index]
+                              textStyle: TextStyle(fontSize: 12),
+                              sizedBox: SizedBox(height: 5),
+                            ),
+                          ])),
                     ],
                   ),
                 );

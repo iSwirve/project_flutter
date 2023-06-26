@@ -19,8 +19,8 @@ class _brandState extends State<brand> {
   getdata() async {
     QuerySnapshot querySnapshot = await _collectionRef.get();
     final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
-    print(allData);
-    print(querySnapshot.docs[0].id);
+    // print(allData);
+    // print(querySnapshot.docs[0].id);
 
     return allData;
   }
@@ -113,13 +113,13 @@ class _brandState extends State<brand> {
                         var name = snapshot.data[index]["name"].toString();
                         var ava = name.toString().substring(0, 1).toUpperCase();
                         // var id = snapshot.data.;
-                        print("hi " + name);
+                        // print("hi " + name);
                         return GestureDetector(
                           onTap: () async {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => brand_detail(index: snapshot.data.docs[0].id),
+                                builder: (context) => brand_detail(index: index),
                               ),
                             );
                           },
