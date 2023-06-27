@@ -223,44 +223,47 @@ class _penjualan_detailState extends State<penjualan_detail> {
                           textStyle: TextStyle(fontSize: 12),
                           sizedBox: SizedBox(height: 5),
                         ),
-                        ListView.builder(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: barang.length,
-                          itemBuilder: (BuildContext context, int ctr) {
-                            int? harga_jual = int.tryParse(barang[ctr]["harga_jual"].toString());
-                            int? qty = int.tryParse(barang[ctr]["qty"].toString());
-                            int? subtotal = harga_jual! * qty!;
-                            total = total + subtotal;
-                            return Column(
-                              children: [
-                                CustomText(
-                                  text: "Nama Barang : " + barang[ctr]["nama_barang"],
-                                  textStyle: TextStyle(fontSize: 12),
-                                  sizedBox: SizedBox(height: 5),
-                                ),
-                                CustomText(
-                                  text: "Harga Barang : Rp." + barang[ctr]["harga_jual"],
-                                  textStyle: TextStyle(fontSize: 12),
-                                  sizedBox: SizedBox(height: 5),
-                                ),
-                                CustomText(
-                                  text: "Jumlah : " + barang[ctr]["qty"],
-                                  textStyle: TextStyle(fontSize: 12),
-                                  sizedBox: SizedBox(height: 5),
-                                ),
-                                CustomText(
-                                  text: "Subtotal : Rp." + subtotal.toString(),
-                                  textStyle: TextStyle(fontSize: 12),
-                                  sizedBox: SizedBox(height: 5),
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                              ],
-                            );
-                          },
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          child: ListView.builder(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: barang.length,
+                            itemBuilder: (BuildContext context, int ctr) {
+                              int? harga_jual = int.tryParse(barang[ctr]["harga_jual"].toString());
+                              int? qty = int.tryParse(barang[ctr]["qty"].toString());
+                              int? subtotal = harga_jual! * qty!;
+                              total = total + subtotal;
+                              return Column(
+                                children: [
+                                  CustomText(
+                                    text: "Nama Barang : " + barang[ctr]["nama_barang"],
+                                    textStyle: TextStyle(fontSize: 12),
+                                    sizedBox: SizedBox(height: 5),
+                                  ),
+                                  CustomText(
+                                    text: "Harga Barang : Rp." + barang[ctr]["harga_jual"],
+                                    textStyle: TextStyle(fontSize: 12),
+                                    sizedBox: SizedBox(height: 5),
+                                  ),
+                                  CustomText(
+                                    text: "Jumlah : " + barang[ctr]["qty"],
+                                    textStyle: TextStyle(fontSize: 12),
+                                    sizedBox: SizedBox(height: 5),
+                                  ),
+                                  CustomText(
+                                    text: "Subtotal : Rp." + subtotal.toString(),
+                                    textStyle: TextStyle(fontSize: 12),
+                                    sizedBox: SizedBox(height: 5),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
                         ),
                         CustomText(
                           text: "Total Barang : Rp." + total.toString(),
