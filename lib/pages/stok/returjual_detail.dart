@@ -140,7 +140,10 @@ class _returjual_detailState extends State<returjual_detail> {
     final allData = qsRetur.docs.map((doc) => doc.data()).toList();
     QuerySnapshot qsBarang = await _barang.get();
     qsBarang.docs.forEach((element) {
-      BarangData[element.id] = element["nama_barang"];
+      BarangData[element.id] = {
+        "nama_barang": element["nama_barang"],
+        "harga_barang": element["harga_jual"],
+      };
     });
 
     QuerySnapshot qsPelanggan = await _pelanggan.get();
@@ -189,11 +192,11 @@ class _returjual_detailState extends State<returjual_detail> {
                 datalist.add(snapshot.data);
                 // print(snapshot.data[widget.index]["name"]);
                 var nama_pelanggan = PelangganData[snapshot.data[widget.index]["pelanggan"]];
-                var nama_barang = BarangData[snapshot.data[widget.index]["id_barang"]];
+                var nama_barang = BarangData[snapshot.data[widget.index]["id_barang"]]["nama_barang"].toString();
+                var harga_jual = BarangData[snapshot.data[widget.index]["id_barang"]]["harga_barang"].toString();
                 var jumlah = snapshot.data[widget.index]["jumlah"].toString();
-                var harga_barang = snapshot.data[widget.index]["harga_barang"];
                 var status_ppn = snapshot.data[widget.index]["status_ppn"];
-                var subtotal = int.tryParse(harga_barang.toString())! * int.tryParse(jumlah.toString())!;
+                var subtotal = int.tryParse(harga_jual.toString())! * int.tryParse(jumlah.toString())!;
                 if (status_ppn == 0)
                   status_ppn = "tidak aktif";
                 else
@@ -235,7 +238,7 @@ class _returjual_detailState extends State<returjual_detail> {
                               sizedBox: SizedBox(height: 5),
                             ),
                             CustomText(
-                              text: "harga_barang : Rp.$harga_barang",
+                              text: "harga_barang : Rp.$harga_jual",
                               textStyle: TextStyle(fontSize: 12),
                               sizedBox: SizedBox(height: 5),
                             ),

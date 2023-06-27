@@ -107,8 +107,7 @@ class _stokState extends State<stok> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
-                          var idBarang =
-                              snapshot.data[index]["id_barang"].toString();
+                          var idBarang = snapshot.data[index]["id_barang"].toString();
                           return StreamBuilder<
                               DocumentSnapshot<Map<String, dynamic>>>(
                             stream: FirebaseFirestore.instance
@@ -118,8 +117,7 @@ class _stokState extends State<stok> {
                             builder: (context, snap) {
                               var data = snap.data?.data();
                               var nama = data?["nama_barang"];
-                              var ava =
-                                  nama.toString().substring(0, 1).toUpperCase();
+                              var ava = nama.toString().substring(0, 1).toUpperCase();
                               return GestureDetector(
                                 onTap: () async {
                                   Navigator.push(

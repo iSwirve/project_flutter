@@ -3,6 +3,7 @@ import 'package:basicpos_v2/pages/master/brand_cru.dart';
 import 'package:basicpos_v2/pages/stok/returbeli.dart';
 import 'package:basicpos_v2/pages/stok/returjual.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
@@ -139,17 +140,6 @@ class _returbeli_detailState extends State<returbeli_detail> {
   getdata() async {
     QuerySnapshot qsRetur = await _retur.get();
     final allData = qsRetur.docs.map((doc) => doc.data()).toList();
-    // QuerySnapshot qsBarang = await _barang.get();
-    // qsBarang.docs.forEach((element) {
-    //   BarangData[element.id] = element["nama_barang"];
-    // });
-
-    // QuerySnapshot qsSupplier = await _supplier.get();
-    // qsSupplier.docs.forEach((element) {
-    //   SupplierData[element.id] = element["nama_supplier"] ;
-    // });
-
-    print(allData);
     return allData;
   }
 
@@ -185,32 +175,30 @@ class _returbeli_detailState extends State<returbeli_detail> {
             future: getdata(),
             // You can set initial data or check snapshot.hasData in the builder // Run check for a single queryRow
             builder: (context, AsyncSnapshot<dynamic> snapshot) {
-              var datalist = [];
               if (snapshot.hasData) {
-                datalist.add(snapshot.data);
-                // print(snapshot.data[widget.index]["name"]);
-                var id_supplier =snapshot.data[widget.index]["id_supplier"].toString();
-                var harga_barang = snapshot.data[widget.index]["harga_barang"].toString();
+                var id_supplier = snapshot.data[widget.index]["id_supplier"].toString();
                 var id_barang = snapshot.data[widget.index]["id_barang"].toString();
                 var tanggal_terima = snapshot.data[widget.index]["tanggal_terima"].toString();
                 var jumlah = snapshot.data[widget.index]["jumlah"].toString();
                 var status_ppn = snapshot.data[widget.index]["status_ppn"];
-                    if (status_ppn == 0)
-                      status_ppn = "tidak aktif";
-                    else
-                      status_ppn = "aktif";  
-                  
+                if (status_ppn == 0)
+                  status_ppn = "tidak aktif";
+                else
+                  status_ppn = "aktif";
                 return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
                   stream: FirebaseFirestore.instance.collection('Supplier').doc('$id_supplier').snapshots(),
                   builder: (context, snaps) {
-                  var nama_supplier = snaps.data?['nama_supplier'].toString();
-                  
+                    var nama_supplier = snaps.data?['nama_supplier'].toString();
                     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
                       stream: FirebaseFirestore.instance.collection('Barang').doc('$id_barang').snapshots(),
                       builder: (context, snapsh) {
-                      var nama_barang= snapsh.data?['nama_barang'].toString();
-                      var harga_beli= snapsh.data?['harga_beli'].toString();
-                      var subtotal = int.parse(harga_barang)*int.parse(jumlah);
+                        var nama_barang = snapsh.data?['nama_barang'].toString();
+                        var harga_beli = snapsh.data?['harga_beli'].toString();
+                        var subtotal = 0;
+                        try {
+                          subtotal = int.parse(harga_beli.toString()) * int.parse(jumlah.toString());
+                        } catch (Exception) {}
+
                         return Container(
                           margin: EdgeInsets.only(top: 10, left: 20),
                           child: Column(
@@ -248,7 +236,7 @@ class _returbeli_detailState extends State<returbeli_detail> {
                                       sizedBox: SizedBox(height: 5),
                                     ),
                                     CustomText(
-                                      text: "harga_barang : Rp.$harga_barang",
+                                      text: "harga_barang : Rp.$harga_beli",
                                       textStyle: TextStyle(fontSize: 12),
                                       sizedBox: SizedBox(height: 5),
                                     ),
@@ -263,7 +251,7 @@ class _returbeli_detailState extends State<returbeli_detail> {
                                       sizedBox: SizedBox(height: 5),
                                     ),
                                     CustomText(
-                                      text: "Subtotal : $subtotal",
+                                      text: "Subtotal : Rp.$subtotal",
                                       textStyle: TextStyle(fontSize: 12),
                                       sizedBox: SizedBox(height: 5),
                                     ),
@@ -273,9 +261,9 @@ class _returbeli_detailState extends State<returbeli_detail> {
                             ],
                           ),
                         );
-                      }
+                      },
                     );
-                  }
+                  },
                 );
               }
               return Container(

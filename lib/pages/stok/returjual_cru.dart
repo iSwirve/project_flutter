@@ -37,7 +37,6 @@ class _retur_cruState extends State<returjual_cru> {
   Map<dynamic, dynamic> statusppn_data = {"0": "Tidak Aktif", "1": "Aktif"};
   Map<dynamic, dynamic> BarangData = new Map();
   Map<dynamic, dynamic> PelangganData = new Map();
-  var harga_barang;
   getdata() async {
     QuerySnapshot qsBarang = await _barang.get();
     final dataBarang = qsBarang.docs.map((doc) => doc.data()).toList();
@@ -46,7 +45,6 @@ class _retur_cruState extends State<returjual_cru> {
 
     qsBarang.docs.forEach((element) {
       BarangData[element.reference.id] = element["nama_barang"];
-      harga_barang = element["harga_jual"];
       ctr++;
     });
 
@@ -176,7 +174,6 @@ class _retur_cruState extends State<returjual_cru> {
                   'id_barang': barang_controller!.dropDownValue!.value.toString(),
                   'pelanggan': pelanggan_controller!.dropDownValue!.value.toString(),
                   'status_ppn': status_ppn_controller!.dropDownValue!.value.toString(),
-                  'harga_barang': harga_barang.toString(),
                   'jumlah': jumlahRetur.text.toString(),
                 };
 

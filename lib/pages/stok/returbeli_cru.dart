@@ -30,17 +30,15 @@ class _retur_cruState extends State<returbeli_cru> {
   SingleValueDropDownController? barang_controller;
   SingleValueDropDownController? Supplier_controller;
   SingleValueDropDownController? status_ppn_controller;
-  TextEditingController tanggal_terima= TextEditingController();
+  TextEditingController tanggal_terima = TextEditingController();
   TextEditingController jumlahRetur = TextEditingController();
   TextEditingController status_ppn = TextEditingController();
-  TextEditingController harga_barang_text = TextEditingController();
   CollectionReference _barang = FirebaseFirestore.instance.collection('Barang');
   CollectionReference _supplier = FirebaseFirestore.instance.collection('Supplier');
   CollectionReference retur = FirebaseFirestore.instance.collection('log_return_seller');
   Map<dynamic, dynamic> statusppn_data = {"0": "Tidak Aktif", "1": "Aktif"};
   Map<dynamic, dynamic> BarangData = new Map();
   Map<dynamic, dynamic> SupplierData = new Map();
-  Map<dynamic, dynamic> harga_barang = new Map();
   getdata() async {
     QuerySnapshot qsBarang = await _barang.get();
     final dataBarang = qsBarang.docs.map((doc) => doc.data()).toList();
@@ -49,7 +47,6 @@ class _retur_cruState extends State<returbeli_cru> {
 
     qsBarang.docs.forEach((element) {
       BarangData[element.reference.id] = element["nama_barang"];
-      harga_barang[element.reference.id] = element["harga_beli"];
       ctr++;
     });
 
@@ -161,11 +158,6 @@ class _retur_cruState extends State<returbeli_cru> {
                             ),
                           ),
                           CustomTextField(
-                            text_controller: harga_barang_text,
-                            hintText: "Harga Barang",
-                            title: "Harga Barang",
-                          ),
-                          CustomTextField(
                             text_controller: jumlahRetur,
                             hintText: "Stok Retur",
                             title: "Stok Barang",
@@ -187,7 +179,6 @@ class _retur_cruState extends State<returbeli_cru> {
               onPressed: () async {
                 Map<String, String>? body;
                 body = {
-                  'harga_barang': harga_barang_text.text.toString(),
                   'id_barang': barang_controller!.dropDownValue!.value.toString(),
                   'id_supplier': Supplier_controller!.dropDownValue!.value.toString(),
                   'jumlah': jumlahRetur.text.toString(),
