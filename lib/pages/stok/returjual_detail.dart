@@ -19,13 +19,12 @@ class returjual_detail extends StatefulWidget {
 }
 
 class _returjual_detailState extends State<returjual_detail> {
-
-  final CollectionReference _brand =
-  FirebaseFirestore.instance.collection('Brand');
+  final CollectionReference _brand = FirebaseFirestore.instance.collection('Brand');
 
   Future<void> _delete(String productId) async {
     await _brand.doc(productId).delete();
   }
+
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
@@ -98,8 +97,7 @@ class _returjual_detailState extends State<returjual_detail> {
                         ),
                         child: const Text(
                           'Ya',
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.w600),
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                         ),
                         onPressed: () async {
                           var id = await getId(widget.index);
@@ -123,10 +121,8 @@ class _returjual_detailState extends State<returjual_detail> {
     );
   }
 
-  CollectionReference _collectionRef =
-      FirebaseFirestore.instance.collection('Brand');
+  CollectionReference _collectionRef = FirebaseFirestore.instance.collection('Brand');
   Map<dynamic, dynamic> brands = new Map();
-
 
   getId(int index) async {
     QuerySnapshot querySnapshot = await _collectionRef.get();
@@ -192,10 +188,16 @@ class _returjual_detailState extends State<returjual_detail> {
               if (snapshot.hasData) {
                 datalist.add(snapshot.data);
                 // print(snapshot.data[widget.index]["name"]);
-                print(brands[widget.index]);
                 var nama_pelanggan = PelangganData[snapshot.data[widget.index]["pelanggan"]];
                 var nama_barang = BarangData[snapshot.data[widget.index]["id_barang"]];
-                var jumlah = snapshot.data[widget.index]["jumlah"];
+                var jumlah = snapshot.data[widget.index]["jumlah"].toString();
+                var harga_barang = snapshot.data[widget.index]["harga_barang"];
+                var status_ppn = snapshot.data[widget.index]["status_ppn"];
+                var subtotal = int.tryParse(harga_barang.toString())! * int.tryParse(jumlah.toString())!;
+                if (status_ppn == 0)
+                  status_ppn = "tidak aktif";
+                else
+                  status_ppn = "aktif";
                 return Container(
                   margin: EdgeInsets.only(top: 10, left: 20),
                   child: Column(
@@ -212,9 +214,10 @@ class _returjual_detailState extends State<returjual_detail> {
                       ),
                       SizedBox(height: 5),
                       Container(
-                          alignment: Alignment.centerLeft,
-                          margin: EdgeInsets.only(top: 7),
-                          child: Column(children: [
+                        alignment: Alignment.centerLeft,
+                        margin: EdgeInsets.only(top: 7),
+                        child: Column(
+                          children: [
                             CustomText(
                               text: "Nama Pelanggan : $nama_pelanggan",
                               //+ brands[widget.index]
@@ -227,11 +230,28 @@ class _returjual_detailState extends State<returjual_detail> {
                               sizedBox: SizedBox(height: 5),
                             ),
                             CustomText(
+                              text: "Status PPN : $status_ppn",
+                              textStyle: TextStyle(fontSize: 12),
+                              sizedBox: SizedBox(height: 5),
+                            ),
+                            CustomText(
+                              text: "harga_barang : Rp.$harga_barang",
+                              textStyle: TextStyle(fontSize: 12),
+                              sizedBox: SizedBox(height: 5),
+                            ),
+                            CustomText(
                               text: "Jumlah : $jumlah",
                               textStyle: TextStyle(fontSize: 12),
                               sizedBox: SizedBox(height: 5),
                             ),
-                          ])),
+                            CustomText(
+                              text: "Subtotal harga barang : Rp.$subtotal",
+                              textStyle: TextStyle(fontSize: 12),
+                              sizedBox: SizedBox(height: 5),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 );

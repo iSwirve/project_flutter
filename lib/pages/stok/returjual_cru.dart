@@ -28,15 +28,16 @@ class _retur_cruState extends State<returjual_cru> {
 
   SingleValueDropDownController? barang_controller;
   SingleValueDropDownController? pelanggan_controller;
+  SingleValueDropDownController? status_ppn_controller;
   TextEditingController jumlahRetur = TextEditingController();
+  TextEditingController status_ppn = TextEditingController();
   CollectionReference _barang = FirebaseFirestore.instance.collection('Barang');
-  CollectionReference _pelanggan =
-      FirebaseFirestore.instance.collection('Pelanggan');
-  CollectionReference retur =
-  FirebaseFirestore.instance.collection('log_return_buyer');
+  CollectionReference _pelanggan = FirebaseFirestore.instance.collection('Pelanggan');
+  CollectionReference retur = FirebaseFirestore.instance.collection('log_return_buyer');
+  Map<dynamic, dynamic> statusppn_data = {"0": "Tidak Aktif", "1": "Aktif"};
   Map<dynamic, dynamic> BarangData = new Map();
   Map<dynamic, dynamic> PelangganData = new Map();
-
+  var harga_barang;
   getdata() async {
     QuerySnapshot qsBarang = await _barang.get();
     final dataBarang = qsBarang.docs.map((doc) => doc.data()).toList();
@@ -45,6 +46,7 @@ class _retur_cruState extends State<returjual_cru> {
 
     qsBarang.docs.forEach((element) {
       BarangData[element.reference.id] = element["nama_barang"];
+      harga_barang = element["harga_jual"];
       ctr++;
     });
 
@@ -105,10 +107,7 @@ class _retur_cruState extends State<returjual_cru> {
                 initialData: {},
                 future: getdata(),
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                  if (!snapshot.hasData ||
-                      snapshot.data == null ||
-                      snapshot.data.isEmpty ||
-                      snapshot.hasError) {
+                  if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
                     if (snapshot.data == {}) {
                       return Container();
                     } else {
@@ -130,8 +129,7 @@ class _retur_cruState extends State<returjual_cru> {
                           CustomDropdown(
                             title: "Barang yang di retur",
                             list: BarangData,
-                            controller: barang_controller =
-                                SingleValueDropDownController(
+                            controller: barang_controller = SingleValueDropDownController(
                               data: DropDownValueModel(
                                 name: "Barang",
                                 value: "Barang",
@@ -141,11 +139,20 @@ class _retur_cruState extends State<returjual_cru> {
                           CustomDropdown(
                             title: "Nama Pelanggan",
                             list: PelangganData,
-                            controller: pelanggan_controller =
-                                SingleValueDropDownController(
+                            controller: pelanggan_controller = SingleValueDropDownController(
                               data: DropDownValueModel(
                                 name: "Nama Pelanggan",
                                 value: "Nama",
+                              ),
+                            ),
+                          ),
+                          CustomDropdown(
+                            title: "Status PPN",
+                            list: statusppn_data,
+                            controller: status_ppn_controller = SingleValueDropDownController(
+                              data: DropDownValueModel(
+                                name: "Status_PPN",
+                                value: "Status_PPN",
                               ),
                             ),
                           ),
@@ -168,18 +175,18 @@ class _retur_cruState extends State<returjual_cru> {
                 body = {
                   'id_barang': barang_controller!.dropDownValue!.value.toString(),
                   'pelanggan': pelanggan_controller!.dropDownValue!.value.toString(),
+                  'status_ppn': status_ppn_controller!.dropDownValue!.value.toString(),
+                  'harga_barang': harga_barang.toString(),
                   'jumlah': jumlahRetur.text.toString(),
-
                 };
 
                 // if (title == "Tambah") {
-                  if (jumlahRetur.text.isEmpty)
-                    Fluttertoast.showToast(
-                        msg: "Nama barang tidak boleh kosong");
-                  else {
-                    Fluttertoast.showToast(msg: "Sukses Insert");
-                    await retur.add(body);
-                  }
+                if (jumlahRetur.text.isEmpty)
+                  Fluttertoast.showToast(msg: "Nama barang tidak boleh kosong");
+                else {
+                  Fluttertoast.showToast(msg: "Sukses Insert");
+                  await retur.add(body);
+                }
                 // } else {
                 //   var id = await getId(widget.index);
                 //   await _collectionRef3.doc(id).update(body);

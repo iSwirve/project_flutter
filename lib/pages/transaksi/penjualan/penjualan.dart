@@ -8,6 +8,7 @@ import 'package:basicpos_v2/pages/stok/stok_cru.dart';
 import 'package:basicpos_v2/pages/stok/stok_detail.dart';
 import 'package:basicpos_v2/pages/transaksi/penjualan/penjualan.dart';
 import 'package:basicpos_v2/pages/transaksi/penjualan/penjualan_cru.dart';
+import 'package:basicpos_v2/pages/transaksi/penjualan/penjualan_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -21,8 +22,7 @@ class penjualan extends StatefulWidget {
 }
 
 class _penjualanState extends State<penjualan> {
-  CollectionReference _collectionRef =
-      FirebaseFirestore.instance.collection('Penjualan');
+  CollectionReference _collectionRef = FirebaseFirestore.instance.collection('Penjualan');
 
   getdata() async {
     QuerySnapshot querySnapshot = await _collectionRef.get();
@@ -92,10 +92,7 @@ class _penjualanState extends State<penjualan> {
                 initialData: [],
                 future: getdata(), // Run check for a single queryRow
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                  if (!snapshot.hasData ||
-                      snapshot.data == null ||
-                      snapshot.data.isEmpty ||
-                      snapshot.hasError) {
+                  if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
                     return Container(
                       height: MediaQuery.of(context).size.height - 200,
                       child: Center(
@@ -110,31 +107,22 @@ class _penjualanState extends State<penjualan> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
-                          var idPelanggan =
-                              snapshot.data[index]["id_pelanggan"].toString();
-                          return StreamBuilder<
-                              DocumentSnapshot<Map<String, dynamic>>>(
-                            stream: FirebaseFirestore.instance
-                                .collection('Pelanggan')
-                                .doc('$idPelanggan')
-                                .snapshots(),
+                          var idPelanggan = snapshot.data[index]["id_pelanggan"].toString();
+                          return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                            stream: FirebaseFirestore.instance.collection('Pelanggan').doc('$idPelanggan').snapshots(),
                             builder: (context, snap) {
                               var data = snap.data?.data();
                               var nama_depan = data?["nama_depan"];
                               var nama_belakang = data?["nama_belakang"];
-                              var ava = nama_depan
-                                  .toString()
-                                  .substring(0, 1)
-                                  .toUpperCase();
+                              var ava = nama_depan.toString().substring(0, 1).toUpperCase();
                               return GestureDetector(
                                 onTap: () async {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) =>
-                                  //         stok_detail(index: index),
-                                  //   ),
-                                  // );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => penjualan_detail(index: index),
+                                    ),
+                                  );
                                 },
                                 child: Row(
                                   children: [
@@ -152,17 +140,14 @@ class _penjualanState extends State<penjualan> {
                                       height: 56,
                                       color: Colors.white,
                                       child: Text(
-                                        nama_depan.toString() +
-                                            " " +
-                                            nama_belakang.toString(),
+                                        nama_depan.toString() + " " + nama_belakang.toString(),
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w500,
                                           color: colors.textPrimary,
                                         ),
                                       ),
-                                      padding:
-                                          EdgeInsets.only(top: 18, left: 15),
+                                      padding: EdgeInsets.only(top: 18, left: 15),
                                     ),
                                   ],
                                 ),
