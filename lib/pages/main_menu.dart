@@ -1,4 +1,6 @@
 import 'package:basicpos_v2/pages/stok/memo.dart';
+import 'package:basicpos_v2/pages/stok/returjual.dart';
+import 'package:basicpos_v2/pages/stok/returjual_cru.dart';
 import 'package:basicpos_v2/pages/transaksi/penjualan/penjualan.dart';
 import 'package:basicpos_v2/pages/transaksi/pembelian/pembelian.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -258,7 +260,17 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                   builder: (context) => pembelian(),
                                 ),
                               );
-                            } else if (search[index].getTitle() == "Logout") {
+                            }
+                            else if (search[index].getTitle() ==
+                                "Retur Jual") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => returjual(),
+                                ),
+                              );
+                            }
+                            else if (search[index].getTitle() == "Logout") {
                               FirebaseAuth.instance.signOut();
                             }
                           },
