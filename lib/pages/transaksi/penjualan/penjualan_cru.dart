@@ -65,12 +65,18 @@ class _penjualan_cruState extends State<penjualan_cru> {
     final allData = querySnapshot1.docs.map((doc) => doc.data()).toList();
     if (_selected == null) _selected = List.generate(allData.length, (i) => false);
     if (_numbarang == null) _numbarang = List.generate(allData.length, (i) => 0);
-    if (_selectedBarang == null) _selectedBarang = List.generate(allData.length, (i) => {"nama_barang": "", "qty": ""});
+    if (_selectedBarang == null)
+      _selectedBarang = List.generate(allData.length, (i) => {"nama_barang": "", "qty": "", "harga_jual": ""});
     return allData;
   }
 
   getIdPelanggan(int index) async {
     QuerySnapshot querySnapshot = await _pelanggan.get();
+    return querySnapshot.docs[index].id;
+  }
+
+  getIdPenjualan(int index) async {
+    QuerySnapshot querySnapshot = await _penjualan.get();
     return querySnapshot.docs[index].id;
   }
 
@@ -133,7 +139,10 @@ class _penjualan_cruState extends State<penjualan_cru> {
                       }
                     }
                   } else {
-                    if (title == "Edit") {}
+                    if (title == "Edit") {
+                      tanggal.text = snapshot.data[widget.index]["tanggal_penjualan"] ?? '-';
+                      tanggal_tempo.text = snapshot.data[widget.index]["tanggal_tempo"] ?? '-';
+                    }
                   }
 
                   return Column(
@@ -150,7 +159,7 @@ class _penjualan_cruState extends State<penjualan_cru> {
                         title: "Tanggal Jatuh Tempo",
                       ),
                       CustomDropdown(
-                        title: "Supplier",
+                        title: "Pelanggan",
                         list: pelanggan_data,
                         controller: pelanggan = SingleValueDropDownController(
                           data: DropDownValueModel(
@@ -281,12 +290,14 @@ class _penjualan_cruState extends State<penjualan_cru> {
                                                       if (_selected![index]) {
                                                         _selectedBarang![index] = {
                                                           "nama_barang": snapshot.data[index]["nama_barang"].toString(),
+                                                          "harga_jual": snapshot.data[index]["harga_jual"].toString(),
                                                           "qty": _numbarang![index].toString(),
                                                         };
                                                         Fluttertoast.showToast(msg: _numbarang![index].toString());
                                                       } else if (!_selected![index]) {
                                                         _selectedBarang![index] = {
                                                           "nama_barang": "",
+                                                          "harga_jual": "",
                                                           "qty": "",
                                                         };
                                                       }
@@ -315,36 +326,36 @@ class _penjualan_cruState extends State<penjualan_cru> {
               text: title,
               onPressed: () async {
                 Map<String, dynamic>? body;
+                int ctr = 0;
+                for (var element in _selectedBarang!) {
+                  if (element["nama_barang"] != "") {
+                    ctr++;
+                  }
+                }
 
+                List<Map> listbarang = List.generate(ctr, (i) => {"nama_barang": "", "qty": "", "harga_jual": ""});
+
+                ctr = 0;
+
+                for (var element in _selectedBarang!) {
+                  if (element["nama_barang"] != "") {
+                    listbarang[ctr] = {
+                      "nama_barang": element["nama_barang"],
+                      "harga_jual": element["harga_jual"],
+                      "qty": element["qty"],
+                    };
+                    ctr++;
+                  }
+                }
+
+                body = {
+                  'barang': listbarang,
+                  'id_pelanggan': pelanggan!.dropDownValue!.value.toString(),
+                  'status_ppn': statusppn!.dropDownValue!.value.toString(),
+                  'tanggal_penjualan': tanggal.text.toString(),
+                  'tanggal_tempo': tanggal_tempo.text.toString(),
+                };
                 if (title == "tambah") {
-                  int ctr = 0;
-                  for (var element in _selectedBarang!) {
-                    if (element["nama_barang"] != "") {
-                      ctr++;
-                    }
-                  }
-
-                  List<Map> listbarang = List.generate(ctr, (i) => {"nama_barang": "", "qty": ""});
-
-                  ctr = 0;
-
-                  for (var element in _selectedBarang!) {
-                    if (element["nama_barang"] != "") {
-                      listbarang[ctr] = {
-                        "nama_barang": element["nama_barang"],
-                        "qty": element["qty"],
-                      };
-                      ctr++;
-                    }
-                  }
-
-                  body = {
-                    'barang': listbarang,
-                    'id_pelanggan': pelanggan!.dropDownValue!.value.toString(),
-                    'status_ppn': statusppn!.dropDownValue!.value.toString(),
-                    'tanggal_penjualan': tanggal.text.toString(),
-                    'tanggal_tempo': tanggal_tempo.text.toString(),
-                  };
                   if (pelanggan!.dropDownValue!.name == "Pelanggan" || statusppn!.dropDownValue!.name == "Status PPN")
                     Fluttertoast.showToast(msg: "Silahkan pilih combobox");
                   else if (listbarang.length == 0) {
@@ -354,14 +365,15 @@ class _penjualan_cruState extends State<penjualan_cru> {
                     await _penjualan.add(body);
                   }
                 } else {
-                  // body = {
-                  //   'id_barang': idBarang,
-                  //   'stok_baik': stok_baik.text.toString(),
-                  //   'stok_rusak': stok_rusak.text.toString(),
-                  // };
-                  // var id = await getId(widget.index);
-                  // await _pelanggan.doc(id).update(body);
-                  // Fluttertoast.showToast(msg: "Sukses update");
+                  if (pelanggan!.dropDownValue!.name == "Pelanggan" || statusppn!.dropDownValue!.name == "Status PPN")
+                    Fluttertoast.showToast(msg: "Silahkan pilih combobox");
+                  else if (listbarang.length == 0) {
+                    Fluttertoast.showToast(msg: "Silahkan pilih barang");
+                  } else {
+                    var id = await getIdPenjualan(widget.index);
+                    await _penjualan.doc(id).update(body);
+                    Fluttertoast.showToast(msg: "Sukses update");
+                  }
                 }
               },
             ),

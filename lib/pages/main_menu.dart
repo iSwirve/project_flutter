@@ -1,4 +1,6 @@
 import 'package:basicpos_v2/pages/stok/memo.dart';
+import 'package:basicpos_v2/pages/stok/returjual.dart';
+import 'package:basicpos_v2/pages/stok/returjual_cru.dart';
 import 'package:basicpos_v2/pages/transaksi/penjualan/penjualan.dart';
 import 'package:basicpos_v2/pages/transaksi/pembelian/pembelian.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -78,11 +80,6 @@ class _MainMenuPageState extends State<MainMenuPage> {
     item.add(MenuList("Penjualan", ""));
     item.add(MenuList("Penjualan", "assets/icons/box.png"));
     item.add(MenuList("Retur Jual", "assets/icons/box.png"));
-    item.add(MenuList("Laporan", ""));
-    item.add(MenuList("History Pelanggan", "assets/icons/file.png"));
-    item.add(MenuList("Pendapatan", "assets/icons/file.png"));
-    item.add(MenuList("Penjualan Barang", "assets/icons/file.png"));
-    item.add(MenuList("Penjualan Barang Supplier", "assets/icons/file.png"));
     item.add(MenuList("Manage", ""));
     item.add(MenuList("Logout", "assets/icons/log-out.png"));
     search.addAll(item);
@@ -178,8 +175,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
                       return Container(
                         margin: EdgeInsets.only(top: 2),
                         child: TextButton(
-                          style: TextButton.styleFrom(
-                              backgroundColor: Colors.transparent),
+                          style: TextButton.styleFrom(backgroundColor: Colors.transparent),
                           onPressed: () async {
                             if (search[index].getTitle() == "Master Supplier") {
                               if (mounted)
@@ -189,39 +185,34 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                     builder: (context) => supplier(),
                                   ),
                                 );
-                            } else if (search[index].getTitle() ==
-                                "Master Pelanggan") {
+                            } else if (search[index].getTitle() == "Master Pelanggan") {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => pelanggan(),
                                   ));
-                            } else if (search[index].getTitle() ==
-                                "Master Barang") {
+                            } else if (search[index].getTitle() == "Master Barang") {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => barang(),
                                 ),
                               );
-                            } else if (search[index].getTitle() ==
-                                "Master Ekspedisi") {
+                            } else if (search[index].getTitle() == "Master Ekspedisi") {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ekspedisi(),
                                 ),
                               );
-                            } else if (search[index].getTitle() ==
-                                "Master Brand") {
+                            } else if (search[index].getTitle() == "Master Brand") {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => brand(),
                                 ),
                               );
-                            } else if (search[index].getTitle() ==
-                                "Master Kategori Barang") {
+                            } else if (search[index].getTitle() == "Master Kategori Barang") {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -242,20 +233,25 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                   builder: (context) => memo(),
                                 ),
                               );
-                            } else if (search[index].getTitle() ==
-                                "Penjualan") {
+                            } else if (search[index].getTitle() == "Penjualan") {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => penjualan(),
                                 ),
                               );
-                            } else if (search[index].getTitle() ==
-                                "Pembelian") {
+                            } else if (search[index].getTitle() == "Pembelian") {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => pembelian(),
+                                ),
+                              );
+                            } else if (search[index].getTitle() == "Retur Jual") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => returjual(),
                                 ),
                               );
                             } else if (search[index].getTitle() == "Logout") {
@@ -267,8 +263,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
                               CircleAvatar(
                                 child: Image.asset(search[index].getImage()),
                                 radius: 15,
-                                backgroundColor:
-                                    Color.fromARGB(255, 239, 248, 255),
+                                backgroundColor: Color.fromARGB(255, 239, 248, 255),
                               ),
                               SizedBox(width: 10),
                               Container(
