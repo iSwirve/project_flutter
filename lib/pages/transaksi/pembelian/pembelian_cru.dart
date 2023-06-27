@@ -32,6 +32,7 @@ class _pembelian_cruState extends State<pembelian_cru> {
   TextEditingController tanggal = TextEditingController();
   TextEditingController tanggal_tempo = TextEditingController();
   TextEditingController tanggal_terima = TextEditingController();
+  TextEditingController stok_pembelian= TextEditingController();
 
   Map<dynamic, dynamic> barang_data = {};
   Map<dynamic, dynamic> supplier_data = {};
@@ -167,6 +168,11 @@ class _pembelian_cruState extends State<pembelian_cru> {
                                 hintText: "Tanggal Terima",
                                 title: "Tanggal Terima",
                               ),
+                              CustomTextField(
+                                text_controller: stok_pembelian,
+                                hintText: "Stok Pembelian",
+                                title: "Stok Pembelian",
+                              ),
                               CustomDropdown(
                                 title: "Supplier",
                                 list: supplier_data,
@@ -219,6 +225,11 @@ class _pembelian_cruState extends State<pembelian_cru> {
                             hintText: "Tanggal Terima",
                             title: "Tanggal Terima",
                           ),
+                          CustomTextField(
+                            text_controller: stok_pembelian,
+                            hintText: "Stok Pembelian",
+                            title: "Stok Pembelian",
+                          ),
                           CustomDropdown(
                             title: "Supplier",
                             list: supplier_data,
@@ -264,6 +275,7 @@ class _pembelian_cruState extends State<pembelian_cru> {
                     'tanggal': tanggal.text.toString(),
                     'tanggal_tempo': tanggal_tempo.text.toString(),
                     'tanggal_terima': tanggal_terima.text.toString(),
+                    'Stok_pembelian': stok_pembelian.text.toString(),
                     'status_ppn': statusppn!.dropDownValue!.value.toString()
                   };
                   if (barang!.dropDownValue!.name == "Barang" || supplier!.dropDownValue!.name == "Supplier")
@@ -282,6 +294,7 @@ class _pembelian_cruState extends State<pembelian_cru> {
                     'tanggal': tanggal.text.toString(),
                     'tanggal_tempo': tanggal_tempo.text.toString(),
                     'tanggal_terima': tanggal_terima.text.toString(),
+                    'Stok_pembelian': stok_pembelian.text.toString(),
                     'status_ppn': statusppn!.dropDownValue!.value.toString()
                   };
                   if (barang!.dropDownValue!.name == "Barang" || supplier!.dropDownValue!.name == "Supplier")

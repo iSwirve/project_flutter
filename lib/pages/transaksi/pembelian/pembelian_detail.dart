@@ -206,6 +206,8 @@ class _pembelian_detailState extends State<pembelian_detail> {
                 snapshot.data[widget.index]["tanggal_terima"].toString();
             var status_temp =
                 snapshot.data[widget.index]["status_ppn"].toString();
+            var stok_pembelian=
+                snapshot.data[widget.index]["stok_pembelian"].toString();
             if(status_temp == "0"){
               status = "Tidak Aktif";
             }else{
@@ -241,6 +243,11 @@ class _pembelian_detailState extends State<pembelian_detail> {
                         ),
                         CustomText(
                           text: "Nama Barang : $nama_barang",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                        CustomText(
+                          text: "Stok Pembelian : $stok_pembelian",
                           textStyle: TextStyle(fontSize: 12),
                           sizedBox: SizedBox(height: 5),
                         ),
