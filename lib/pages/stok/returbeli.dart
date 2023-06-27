@@ -2,41 +2,41 @@ import 'package:basicpos_v2/constants/urls.dart' as url;
 import 'package:basicpos_v2/pages/main_menu.dart';
 import 'package:basicpos_v2/pages/master/brand_cru.dart';
 import 'package:basicpos_v2/pages/master/brand_detail.dart';
+import 'package:basicpos_v2/pages/stok/returbeli_cru.dart';
+import 'package:basicpos_v2/pages/stok/returbeli_detail.dart';
 import 'package:basicpos_v2/pages/stok/returjual_cru.dart';
 import 'package:basicpos_v2/pages/stok/returjual_detail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class returjual extends StatefulWidget {
-  const returjual({super.key});
+class returbeli extends StatefulWidget {
+  const returbeli({super.key});
 
   @override
-  State<returjual> createState() => _returjualState();
+  State<returbeli> createState() => _returbeliState();
 }
 
-class _returjualState extends State<returjual> {
+class _returbeliState extends State<returbeli> {
   var count = 0;
-  CollectionReference _retur = FirebaseFirestore.instance.collection('log_return_buyer');
-  CollectionReference _pelanggan = FirebaseFirestore.instance.collection('Pelanggan');
+  CollectionReference _retur = FirebaseFirestore.instance.collection('log_return_seller');
+  CollectionReference _Supplier = FirebaseFirestore.instance.collection('Supplier');
 
   CollectionReference _barang = FirebaseFirestore.instance.collection('Barang');
   Map<dynamic, dynamic> BarangData = new Map();
-  Map<dynamic, dynamic> PelangganData = new Map();
+  Map<dynamic, dynamic> SupplierData = new Map();
   getdata() async {
     QuerySnapshot qsRetur = await _retur.get();
     final allData = qsRetur.docs.map((doc) => doc.data()).toList();
-    QuerySnapshot qsBarang = await _barang.get();
-    qsBarang.docs.forEach((element) {
-      BarangData[element.id] = element["nama_barang"];
-    });
+    // QuerySnapshot qsBarang = await _barang.get();
+    // qsBarang.docs.forEach((element) {
+    //   BarangData[element.id] = element["nama_barang"];
+    // });
 
-    QuerySnapshot qsPelanggan = await _pelanggan.get();
-    qsPelanggan.docs.forEach((element) {
-      PelangganData[element.id] = element["nama_depan"] + " " + element["nama_belakang"];
-    });
-
-    print(allData);
+    // QuerySnapshot qsSupplier = await _Supplier.get();
+    // qsSupplier.docs.forEach((element) {
+    //   SupplierData[element.id] = element["nama_supplier"];
+    // });
     return allData;
   }
 
@@ -52,7 +52,7 @@ class _returjualState extends State<returjual> {
       appBar: AppBar(
         elevation: 0,
         title: const Text(
-          "Retur Jual",
+          "Retur Beli",
           style: TextStyle(
             color: Colors.black,
           ),
@@ -92,7 +92,7 @@ class _returjualState extends State<returjual> {
                     prefixIcon: Icon(Icons.search),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.all(10),
-                    hintText: 'Nama Pelanggan',
+                    hintText: 'Nama Supplier',
                   ),
                 ),
               ),
@@ -125,47 +125,53 @@ class _returjualState extends State<returjual> {
                       shrinkWrap: true,
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
-                        var name = PelangganData[snapshot.data[index]["pelanggan"].toString()];
-                        var ava = name.toString().substring(0, 1).toUpperCase();
-                        // var id = snapshot.data.;
-                        // print("hi " + name);
-                        return GestureDetector(
-                          onTap: () async {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => returjual_detail(index: index),
+                        var idSupplier =
+                              snapshot.data[index]["id_supplier"].toString();
+                       
+                        return StreamBuilder< DocumentSnapshot<Map<String, dynamic>>>(
+                          stream: FirebaseFirestore.instance.collection('Supplier').doc('$idSupplier').snapshots(),
+                          builder: (context, snaps) {
+                            var name= snaps.data?['nama_supplier'].toString();
+                            var ava = name.toString().substring(0, 1).toUpperCase();
+                            return GestureDetector(
+                              onTap: () async {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => returbeli_detail(index: index),
+                                  ),
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    child: Text(
+                                      ava,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    radius: 20,
+                                    backgroundColor:
+                                    Color.fromARGB(255, 239, 248, 255),
+                                  ),
+                                  Container(
+                                    height: 56,
+                                    color: Colors.white,
+                                    child: Text(
+                                      name.toString(),
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color.fromARGB(255, 52, 64, 84),
+                                      ),
+                                    ),
+                                    padding: EdgeInsets.only(top: 18, left: 15),
+                                  ),
+                                ],
                               ),
                             );
-                          },
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                child: Text(
-                                  ava,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                radius: 20,
-                                backgroundColor:
-                                Color.fromARGB(255, 239, 248, 255),
-                              ),
-                              Container(
-                                height: 56,
-                                color: Colors.white,
-                                child: Text(
-                                  name,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color.fromARGB(255, 52, 64, 84),
-                                  ),
-                                ),
-                                padding: EdgeInsets.only(top: 18, left: 15),
-                              ),
-                            ],
-                          ),
+                          }
                         );
                       },
                     ),
@@ -185,7 +191,7 @@ class _returjualState extends State<returjual> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => returjual_cru(
+                builder: (context) => returbeli_cru(
                   edit: false,
                 ),
               ),

@@ -1,4 +1,5 @@
 import 'package:basicpos_v2/pages/stok/memo.dart';
+import 'package:basicpos_v2/pages/stok/returbeli.dart';
 import 'package:basicpos_v2/pages/stok/returjual.dart';
 import 'package:basicpos_v2/pages/stok/returjual_cru.dart';
 import 'package:basicpos_v2/pages/transaksi/penjualan/penjualan.dart';
@@ -252,6 +253,13 @@ class _MainMenuPageState extends State<MainMenuPage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => returjual(),
+                                ),
+                              );
+                            }else if (search[index].getTitle() == "Retur Beli") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => returbeli(),
                                 ),
                               );
                             } else if (search[index].getTitle() == "Logout") {
