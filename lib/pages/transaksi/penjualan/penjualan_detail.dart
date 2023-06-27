@@ -255,6 +255,9 @@ class _penjualan_detailState extends State<penjualan_detail> {
                                   textStyle: TextStyle(fontSize: 12),
                                   sizedBox: SizedBox(height: 5),
                                 ),
+                                SizedBox(
+                                  height: 15,
+                                ),
                               ],
                             );
                           },
