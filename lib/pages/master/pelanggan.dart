@@ -104,6 +104,7 @@ class _pelangganState extends State<pelanggan> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
+
                           var name = snapshot.data[index]["nama_depan"].toString() +
                               " " +
                               snapshot.data[index]["nama_belakang"].toString();

@@ -298,7 +298,7 @@ class _pelangganState extends State<pelanggan_detail> {
                 MaterialPageRoute(
                   builder: (context) => pelanggan_cru(
                     edit: true,
-                    index: int.parse(widget.index),
+                    index: widget.index,
                   ),
                 ),
               );

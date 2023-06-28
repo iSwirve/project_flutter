@@ -279,127 +279,127 @@ class _penjualan_detailState extends State<penjualan_detail> {
           }
         },
       ),
-      floatingActionButton: FocusedMenuHolder(
-        menuWidth: 135,
-        blurSize: 5.0,
-        menuItemExtent: 50,
-        menuBoxDecoration:
-            BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.all(Radius.circular(15.0))),
-        duration: Duration(milliseconds: 100),
-        animateMenuItems: true,
-        blurBackgroundColor: Color.fromARGB(127, 29, 41, 57),
-        openWithTap: true, // Open Focused-Menu on Tap rather than Long Press
-        menuOffset: 10.0, // Offset value to show menuItem from the selected item
-        bottomOffsetHeight: 80.0,
-        menuItems: <FocusedMenuItem>[
-          FocusedMenuItem(
-            backgroundColor: Colors.transparent,
-            title: Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    color: Colors.white,
-                  ),
-                  child: Text(
-                    "Hapus",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    color: Colors.white,
-                  ),
-                  child: ImageIcon(
-                    size: 36,
-                    AssetImage("assets/icons/trash.png"),
-                  ),
-                ),
-              ],
-            ),
-            onPressed: () {
-              _showMyDialog();
-            },
-          ),
-          FocusedMenuItem(
-            backgroundColor: Colors.transparent,
-            title: Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    color: Colors.white,
-                  ),
-                  child: Text(
-                    " Ubah ",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    color: Colors.white,
-                  ),
-                  child: ImageIcon(
-                    size: 36,
-                    AssetImage("assets/icons/edit.png"),
-                  ),
-                ),
-              ],
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => penjualan_cru(
-                    edit: true,
-                    index: widget.index,
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
-        onPressed: () {},
-        child: Container(
-          width: 48,
-          height: 48,
-          margin: const EdgeInsets.only(bottom: 40, right: 20),
-          child: Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: ShapeDecoration(
-                shadows: [
-                  BoxShadow(
-                    color: colors.textPrimary,
-                    offset: new Offset(5.0, 5.0),
-                    blurRadius: 5.0,
-                  )
-                ],
-                color: colors.secondary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                )),
-            child: const Icon(
-              Icons.menu,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
+      // floatingActionButton: FocusedMenuHolder(
+      //   menuWidth: 135,
+      //   blurSize: 5.0,
+      //   menuItemExtent: 50,
+      //   menuBoxDecoration:
+      //       BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.all(Radius.circular(15.0))),
+      //   duration: Duration(milliseconds: 100),
+      //   animateMenuItems: true,
+      //   blurBackgroundColor: Color.fromARGB(127, 29, 41, 57),
+      //   openWithTap: true, // Open Focused-Menu on Tap rather than Long Press
+      //   menuOffset: 10.0, // Offset value to show menuItem from the selected item
+      //   bottomOffsetHeight: 80.0,
+      //   menuItems: <FocusedMenuItem>[
+      //     FocusedMenuItem(
+      //       backgroundColor: Colors.transparent,
+      //       title: Row(
+      //         children: [
+      //           Container(
+      //             padding: EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
+      //             decoration: BoxDecoration(
+      //               borderRadius: BorderRadius.all(Radius.circular(20)),
+      //               color: Colors.white,
+      //             ),
+      //             child: Text(
+      //               "Hapus",
+      //               style: TextStyle(
+      //                 fontSize: 12,
+      //                 fontWeight: FontWeight.w500,
+      //                 color: Colors.black,
+      //               ),
+      //             ),
+      //           ),
+      //           SizedBox(width: 10),
+      //           Container(
+      //             decoration: BoxDecoration(
+      //               borderRadius: BorderRadius.all(Radius.circular(5)),
+      //               color: Colors.white,
+      //             ),
+      //             child: ImageIcon(
+      //               size: 36,
+      //               AssetImage("assets/icons/trash.png"),
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //       onPressed: () {
+      //         _showMyDialog();
+      //       },
+      //     ),
+      //     FocusedMenuItem(
+      //       backgroundColor: Colors.transparent,
+      //       title: Row(
+      //         children: [
+      //           Container(
+      //             padding: EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
+      //             decoration: BoxDecoration(
+      //               borderRadius: BorderRadius.all(Radius.circular(20)),
+      //               color: Colors.white,
+      //             ),
+      //             child: Text(
+      //               " Ubah ",
+      //               style: TextStyle(
+      //                 fontSize: 12,
+      //                 fontWeight: FontWeight.w500,
+      //                 color: Colors.black,
+      //               ),
+      //             ),
+      //           ),
+      //           SizedBox(width: 10),
+      //           Container(
+      //             decoration: BoxDecoration(
+      //               borderRadius: BorderRadius.all(Radius.circular(5)),
+      //               color: Colors.white,
+      //             ),
+      //             child: ImageIcon(
+      //               size: 36,
+      //               AssetImage("assets/icons/edit.png"),
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //       onPressed: () {
+      //         Navigator.push(
+      //           context,
+      //           MaterialPageRoute(
+      //             builder: (context) => penjualan_cru(
+      //               edit: true,
+      //               index: widget.index,
+      //             ),
+      //           ),
+      //         );
+      //       },
+      //     ),
+      //   ],
+      //   onPressed: () {},
+      //   child: Container(
+      //     width: 48,
+      //     height: 48,
+      //     margin: const EdgeInsets.only(bottom: 40, right: 20),
+      //     child: Container(
+      //       width: double.infinity,
+      //       height: double.infinity,
+      //       decoration: ShapeDecoration(
+      //           shadows: [
+      //             BoxShadow(
+      //               color: colors.textPrimary,
+      //               offset: new Offset(5.0, 5.0),
+      //               blurRadius: 5.0,
+      //             )
+      //           ],
+      //           color: colors.secondary,
+      //           shape: RoundedRectangleBorder(
+      //             borderRadius: BorderRadius.circular(8),
+      //           )),
+      //       child: const Icon(
+      //         Icons.menu,
+      //         color: Colors.white,
+      //       ),
+      //     ),
+      //   ),
+      // ),
       backgroundColor: Colors.white,
     );
   }
