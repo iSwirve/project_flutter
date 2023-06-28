@@ -23,8 +23,7 @@ class _supplierState extends State<supplier_detail> {
       builder: (BuildContext context) {
         return Center(
           child: AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
             icon: Container(
               width: 120,
               height: 120,
@@ -61,9 +60,7 @@ class _supplierState extends State<supplier_detail> {
                             )),
                         child: const Text(
                           'Tidak',
-                          style: TextStyle(
-                              color: Color.fromARGB(255, 24, 72, 169),
-                              fontWeight: FontWeight.w600),
+                          style: TextStyle(color: Color.fromARGB(255, 24, 72, 169), fontWeight: FontWeight.w600),
                         ),
                         onPressed: () => Navigator.pop(context),
                       ),
@@ -82,8 +79,7 @@ class _supplierState extends State<supplier_detail> {
                             )),
                         child: const Text(
                           'Ya',
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.w600),
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                         ),
                         onPressed: () async {
                           var id = await getId(widget.index);
@@ -108,8 +104,7 @@ class _supplierState extends State<supplier_detail> {
     );
   }
 
-  CollectionReference _supplier =
-      FirebaseFirestore.instance.collection('Supplier');
+  CollectionReference _supplier = FirebaseFirestore.instance.collection('Supplier');
   getdata() async {
     QuerySnapshot qs = await _supplier.get();
     final dataMemo = qs.docs.map((doc) => doc.data()).toList();
@@ -162,27 +157,17 @@ class _supplierState extends State<supplier_detail> {
                   child: Column(
                     children: [
                       CustomText(
-                        text: "Nama supplier : " +
-                            snapshot.data[widget.index]["nama_supplier"]
-                                .toString(),
+                        text: "Nama supplier : " + snapshot.data[widget.index]["nama_supplier"].toString(),
                         textStyle: TextStyle(fontSize: 12),
                         sizedBox: SizedBox(height: 5),
                       ),
                       CustomText(
-                        text: "Kode Supplier : " +
-                            snapshot.data[widget.index]["kode"].toString(),
+                        text: "Alamat : " + snapshot.data[widget.index]["alamat"].toString(),
                         textStyle: TextStyle(fontSize: 12),
                         sizedBox: SizedBox(height: 5),
                       ),
                       CustomText(
-                        text: "Alamat : " +
-                            snapshot.data[widget.index]["alamat"].toString(),
-                        textStyle: TextStyle(fontSize: 12),
-                        sizedBox: SizedBox(height: 5),
-                      ),
-                      CustomText(
-                        text: "Telpon : " +
-                            snapshot.data[widget.index]["telpon"].toString(),
+                        text: "Telpon : " + snapshot.data[widget.index]["telpon"].toString(),
                         textStyle: TextStyle(fontSize: 12),
                         sizedBox: SizedBox(height: 5),
                       ),
@@ -214,8 +199,7 @@ class _supplierState extends State<supplier_detail> {
         animateMenuItems: true,
         blurBackgroundColor: Color.fromARGB(127, 29, 41, 57),
         openWithTap: true, // Open Focused-Menu on Tap rather than Long Press
-        menuOffset:
-            10.0, // Offset value to show menuItem from the selected item
+        menuOffset: 10.0, // Offset value to show menuItem from the selected item
         bottomOffsetHeight: 80.0,
         menuItems: <FocusedMenuItem>[
           FocusedMenuItem(
@@ -268,8 +252,7 @@ class _supplierState extends State<supplier_detail> {
             title: Row(
               children: [
                 Container(
-                  padding:
-                      EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
+                  padding: EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: Colors.white,

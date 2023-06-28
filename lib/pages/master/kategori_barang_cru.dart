@@ -25,18 +25,14 @@ class kategori_barang_cru extends StatefulWidget {
 class _kategori_barang_cruState extends State<kategori_barang_cru> {
   TextEditingController nama = TextEditingController();
   SingleValueDropDownController? subkategori;
-  Map<dynamic, dynamic> subkategoriData = {};
 
   var title = "Tambah";
 
-  CollectionReference _collectionRef3 =
-  FirebaseFirestore.instance.collection('Kategori');
+  CollectionReference _collectionRef3 = FirebaseFirestore.instance.collection('Kategori');
   getdata() async {
     QuerySnapshot querySnapshot = await _collectionRef3.get();
-
     final dataBrand = querySnapshot.docs.map((doc) => doc.data()).toList();
     return dataBrand;
-    return querySnapshot;
   }
 
   getId(int index) async {
@@ -89,10 +85,7 @@ class _kategori_barang_cruState extends State<kategori_barang_cru> {
                 future: getdata(),
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
                   if (title == "Edit") {
-                    if (!snapshot.hasData ||
-                        snapshot.data == null ||
-                        snapshot.data.isEmpty ||
-                        snapshot.hasError) {
+                    if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
                       if (snapshot.data == {}) {
                         return Container();
                       } else {
@@ -104,7 +97,8 @@ class _kategori_barang_cruState extends State<kategori_barang_cru> {
                         );
                       }
                     } else {
-                      nama.text =  snapshot.data[widget.index]["name"] ?? '';;
+                      nama.text = snapshot.data[widget.index]["name"] ?? '';
+                      ;
                     }
                   }
                   return Column(
@@ -114,16 +108,6 @@ class _kategori_barang_cruState extends State<kategori_barang_cru> {
                         text_controller: nama,
                         hintText: "Nama Kategori",
                         title: "Nama Kategori",
-                      ),
-                      CustomDropdown(
-                        title: "Sub Kategori Dari",
-                        list: subkategoriData,
-                        controller: subkategori = SingleValueDropDownController(
-                          data: DropDownValueModel(
-                            name: "Sub Kategori Dari",
-                            value: "Sub Kategori Dari",
-                          ),
-                        ),
                       ),
                     ],
                   );

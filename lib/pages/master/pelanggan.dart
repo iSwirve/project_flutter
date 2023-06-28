@@ -13,15 +13,11 @@ class pelanggan extends StatefulWidget {
 }
 
 class _pelangganState extends State<pelanggan> {
-   var count = 0;
-  CollectionReference _collectionRef =
-  FirebaseFirestore.instance.collection('Pelanggan');
+  var loaded = false;
+  CollectionReference _collectionRef = FirebaseFirestore.instance.collection('Pelanggan');
   getdata() async {
     QuerySnapshot querySnapshot = await _collectionRef.get();
-
-    // Get data from docs and convert map to List
     final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
-
     return allData;
   }
 
@@ -85,14 +81,14 @@ class _pelangganState extends State<pelanggan> {
               ),
               SizedBox(height: 10),
               FutureBuilder<dynamic>(
-                initialData: {},
+                initialData: [],
                 future: getdata(), // Run check for a single queryRow
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                  if (!snapshot.hasData ||snapshot.data == null ||snapshot.data.isEmpty ||snapshot.hasError) {
-                    if (count > 0) {
-                      count = 0;
+                  if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
+                    if (loaded) {
                       return Container();
                     } else {
+                      loaded = true;
                       return Container(
                         height: MediaQuery.of(context).size.height - 200,
                         child: Center(
@@ -108,7 +104,9 @@ class _pelangganState extends State<pelanggan> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
-                          var name = snapshot.data[index]["nama_depan"].toString()+" "+ snapshot.data[index]["nama_belakang"].toString();
+                          var name = snapshot.data[index]["nama_depan"].toString() +
+                              " " +
+                              snapshot.data[index]["nama_belakang"].toString();
                           var id = snapshot.data[index]["id"].toString();
                           var ava = name.toString().substring(0, 1);
                           return GestureDetector(
@@ -116,8 +114,7 @@ class _pelangganState extends State<pelanggan> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      pelanggan_detail(index: index),
+                                  builder: (context) => pelanggan_detail(index: index),
                                 ),
                               );
                             },
@@ -126,12 +123,10 @@ class _pelangganState extends State<pelanggan> {
                                 CircleAvatar(
                                   child: Text(
                                     ava,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w500),
+                                    style: TextStyle(fontWeight: FontWeight.w500),
                                   ),
                                   radius: 20,
-                                  backgroundColor:
-                                      Color.fromARGB(255, 239, 248, 255),
+                                  backgroundColor: Color.fromARGB(255, 239, 248, 255),
                                 ),
                                 Container(
                                   height: 56,

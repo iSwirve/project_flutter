@@ -13,16 +13,12 @@ class kategori_barang extends StatefulWidget {
 }
 
 class _kategoribarangState extends State<kategori_barang> {
-  var count = 0;
+  var loaded = false;
   CollectionReference _collectionRef = FirebaseFirestore.instance.collection('Kategori');
+
   getdata() async {
     QuerySnapshot querySnapshot = await _collectionRef.get();
-
-    // Get data from docs and convert map to List
     final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
-    print(allData);
-    print(querySnapshot.docs[0].id);
-
     return allData;
   }
 
@@ -89,14 +85,11 @@ class _kategoribarangState extends State<kategori_barang> {
                 initialData: [],
                 future: getdata(), // Run check for a single queryRow
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                  if (!snapshot.hasData ||
-                      snapshot.data == null ||
-                      snapshot.data.isEmpty ||
-                      snapshot.hasError) {
-                    if (count > 0) {
-                      count = 0;
+                  if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
+                    if (loaded) {
                       return Container();
                     } else {
+                      loaded = true;
                       return Container(
                         height: MediaQuery.of(context).size.height - 200,
                         child: Center(
@@ -113,17 +106,13 @@ class _kategoribarangState extends State<kategori_barang> {
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
                           var name = snapshot.data[index]["name"].toString();
-                          // var id = int.parse(
-                          //   snapshot.data[index]["id"].toString(),
-                          // );
                           var ava = name.toString().substring(0, 1);
                           return GestureDetector(
                             onTap: () async {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      kategori_barang_detail(index: index),
+                                  builder: (context) => kategori_barang_detail(index: index),
                                 ),
                               );
                             },
@@ -137,12 +126,7 @@ class _kategoribarangState extends State<kategori_barang> {
                                     ),
                                   ),
                                   radius: 20,
-                                  backgroundColor: Color.fromARGB(
-                                    255,
-                                    239,
-                                    248,
-                                    255,
-                                  ),
+                                  backgroundColor: Color.fromARGB(255, 239, 248, 255),
                                 ),
                                 Container(
                                   height: 56,
@@ -152,12 +136,7 @@ class _kategoribarangState extends State<kategori_barang> {
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
-                                      color: Color.fromARGB(
-                                        255,
-                                        52,
-                                        64,
-                                        84,
-                                      ),
+                                      color: Color.fromARGB(255, 52, 64, 84),
                                     ),
                                   ),
                                   padding: EdgeInsets.only(

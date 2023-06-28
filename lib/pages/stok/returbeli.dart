@@ -18,7 +18,7 @@ class returbeli extends StatefulWidget {
 }
 
 class _returbeliState extends State<returbeli> {
-  var count = 0;
+  var loaded = false;
   CollectionReference _retur = FirebaseFirestore.instance.collection('log_return_seller');
   CollectionReference _Supplier = FirebaseFirestore.instance.collection('Supplier');
 
@@ -102,14 +102,11 @@ class _returbeliState extends State<returbeli> {
               initialData: [],
               future: getdata(), // Run check for a single queryRow
               builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                if (!snapshot.hasData ||
-                    snapshot.data == null ||
-                    snapshot.data.isEmpty ||
-                    snapshot.hasError) {
-                  if (count > 0) {
-                    count = 0;
+                if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
+                  if (loaded) {
                     return Container();
                   } else {
+                    loaded = true;
                     return Container(
                       height: MediaQuery.of(context).size.height - 200,
                       child: Center(
@@ -125,54 +122,51 @@ class _returbeliState extends State<returbeli> {
                       shrinkWrap: true,
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
-                        var idSupplier =
-                              snapshot.data[index]["id_supplier"].toString();
-                       
-                        return StreamBuilder< DocumentSnapshot<Map<String, dynamic>>>(
-                          stream: FirebaseFirestore.instance.collection('Supplier').doc('$idSupplier').snapshots(),
-                          builder: (context, snaps) {
-                            var name= snaps.data?['nama_supplier'].toString();
-                            var ava = name.toString().substring(0, 1).toUpperCase();
-                            return GestureDetector(
-                              onTap: () async {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => returbeli_detail(index: index),
-                                  ),
-                                );
-                              },
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    child: Text(
-                                      ava,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                        var idSupplier = snapshot.data[index]["id_supplier"].toString();
+
+                        return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                            stream: FirebaseFirestore.instance.collection('Supplier').doc('$idSupplier').snapshots(),
+                            builder: (context, snaps) {
+                              var name = snaps.data?['nama_supplier'].toString();
+                              var ava = name.toString().substring(0, 1).toUpperCase();
+                              return GestureDetector(
+                                onTap: () async {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => returbeli_detail(index: index),
                                     ),
-                                    radius: 20,
-                                    backgroundColor:
-                                    Color.fromARGB(255, 239, 248, 255),
-                                  ),
-                                  Container(
-                                    height: 56,
-                                    color: Colors.white,
-                                    child: Text(
-                                      name.toString(),
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        color: Color.fromARGB(255, 52, 64, 84),
+                                  );
+                                },
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      child: Text(
+                                        ava,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
+                                      radius: 20,
+                                      backgroundColor: Color.fromARGB(255, 239, 248, 255),
                                     ),
-                                    padding: EdgeInsets.only(top: 18, left: 15),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-                        );
+                                    Container(
+                                      height: 56,
+                                      color: Colors.white,
+                                      child: Text(
+                                        name.toString(),
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Color.fromARGB(255, 52, 64, 84),
+                                        ),
+                                      ),
+                                      padding: EdgeInsets.only(top: 18, left: 15),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            });
                       },
                     ),
                   );

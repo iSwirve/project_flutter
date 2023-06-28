@@ -1,5 +1,3 @@
-
-
 import 'package:basicpos_v2/pages/master/pelanggan.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
 import 'package:basicpos_v2/pages/master/pelanggan_cru.dart';
@@ -33,8 +31,7 @@ class _pelangganState extends State<pelanggan_detail> {
       builder: (BuildContext context) {
         return Center(
           child: AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
             icon: Container(
               width: 120,
               height: 120,
@@ -71,9 +68,7 @@ class _pelangganState extends State<pelanggan_detail> {
                             )),
                         child: const Text(
                           'Tidak',
-                          style: TextStyle(
-                              color: Color.fromARGB(255, 24, 72, 169),
-                              fontWeight: FontWeight.w600),
+                          style: TextStyle(color: Color.fromARGB(255, 24, 72, 169), fontWeight: FontWeight.w600),
                         ),
                         onPressed: () => Navigator.pop(context),
                       ),
@@ -102,7 +97,6 @@ class _pelangganState extends State<pelanggan_detail> {
                           var id = await getId(widget.index);
                           _delete(id);
                           Navigator.push(
-
                             context,
                             MaterialPageRoute(
                               builder: (context) => pelanggan(),
@@ -123,8 +117,7 @@ class _pelangganState extends State<pelanggan_detail> {
 
   Map<dynamic, dynamic> dataPelanggan = new Map();
 
-  final CollectionReference _Pelanggan =
-      FirebaseFirestore.instance.collection('Pelanggan');
+  final CollectionReference _Pelanggan = FirebaseFirestore.instance.collection('Pelanggan');
 
   getdata() async {
     QuerySnapshot querySnapshot = await _Pelanggan.get();
@@ -137,6 +130,7 @@ class _pelangganState extends State<pelanggan_detail> {
     QuerySnapshot querySnapshot = await _Pelanggan.get();
     return querySnapshot.docs[index].id;
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -169,29 +163,20 @@ class _pelangganState extends State<pelanggan_detail> {
             initialData: [],
             future: getdata(),
             builder: (context, AsyncSnapshot<dynamic> snapshot) {
-              if (!snapshot.hasData ||
-                  snapshot.data == null ||
-                  snapshot.data.isEmpty ||
-                  snapshot.hasError) {
-                if (count > 0) {
-                  count = 0;
-                  return Container();
-                } else {
-                  return Container(
-                    height: MediaQuery.of(context).size.height - 200,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
+              if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
+                return Container(
+                  height: MediaQuery.of(context).size.height - 200,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
               } else {
-                var nama_depan =snapshot.data[widget.index]["nama_depan"].toString();
+                var nama_depan = snapshot.data[widget.index]["nama_depan"].toString();
                 var nama_belakang = snapshot.data[widget.index]["nama_belakang"].toString();
-                var alamat =snapshot.data[widget.index]["alamat"].toString();
-                var telepon =snapshot.data[widget.index]["telepon"].toString();
-                var email =snapshot.data[widget.index]["email"].toString();
-                return SingleChildScrollView(
-                  child: Container(
+                var alamat = snapshot.data[widget.index]["alamat"].toString();
+                var telepon = snapshot.data[widget.index]["telepon"].toString();
+                var email = snapshot.data[widget.index]["email"].toString();
+                return Container(
                   margin: EdgeInsets.only(top: 10, left: 20),
                   child: Column(
                     children: [
@@ -222,15 +207,8 @@ class _pelangganState extends State<pelanggan_detail> {
                       ),
                     ],
                   ),
-                  ),
                 );
               }
-              return Container(
-                height: MediaQuery.of(context).size.height - 200,
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
             },
           ),
         ),
@@ -249,8 +227,7 @@ class _pelangganState extends State<pelanggan_detail> {
         animateMenuItems: true,
         blurBackgroundColor: Color.fromARGB(127, 29, 41, 57),
         openWithTap: true, // Open Focused-Menu on Tap rather than Long Press
-        menuOffset:
-            10.0, // Offset value to show menuItem from the selected item
+        menuOffset: 10.0, // Offset value to show menuItem from the selected item
         bottomOffsetHeight: 80.0,
         menuItems: <FocusedMenuItem>[
           FocusedMenuItem(
@@ -258,8 +235,7 @@ class _pelangganState extends State<pelanggan_detail> {
               title: Row(
                 children: [
                   Container(
-                    padding:
-                        EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
+                    padding: EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                       color: Colors.white,
@@ -279,8 +255,7 @@ class _pelangganState extends State<pelanggan_detail> {
                       borderRadius: BorderRadius.all(Radius.circular(5)),
                       color: Colors.white,
                     ),
-                    child: ImageIcon(
-                        size: 36, AssetImage("assets/icons/trash.png")),
+                    child: ImageIcon(size: 36, AssetImage("assets/icons/trash.png")),
                   ),
                 ],
               ),
@@ -292,18 +267,14 @@ class _pelangganState extends State<pelanggan_detail> {
             title: Row(
               children: [
                 Container(
-                  padding:
-                      EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
+                  padding: EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: Colors.white,
                   ),
                   child: Text(
                     " Ubah ",
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black),
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black),
                   ),
                 ),
                 SizedBox(width: 10),

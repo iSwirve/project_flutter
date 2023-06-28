@@ -1,4 +1,3 @@
-
 import 'package:basicpos_v2/components/custom_dropdown.dart';
 import 'package:basicpos_v2/pages/master/pelanggan.dart';
 import 'package:basicpos_v2/constants/urls.dart' as url;
@@ -9,7 +8,9 @@ import '../../constants/dimens.dart' as dimens;
 import '../../components/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 String idtemp = "";
+
 class pelanggan_cru extends StatefulWidget {
   final edit;
   final index;
@@ -24,20 +25,20 @@ class _pelanggan_cruState extends State<pelanggan_cru> {
   TextEditingController nama_depan = TextEditingController();
   TextEditingController nama_belakang = TextEditingController();
   TextEditingController telepon = TextEditingController();
-   TextEditingController id = TextEditingController();
+  TextEditingController id = TextEditingController();
   TextEditingController alamat = TextEditingController();
   TextEditingController email = TextEditingController();
   var title = "Tambah";
 
-  CollectionReference _collectionRef =
-      FirebaseFirestore.instance.collection('Pelanggan');
+  CollectionReference _collectionRef = FirebaseFirestore.instance.collection('Pelanggan');
 
   getdata() async {
-     QuerySnapshot querySnapshot = await _collectionRef.get();
+    QuerySnapshot querySnapshot = await _collectionRef.get();
     final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
     var ctr = 0;
     return allData;
   }
+
   getId(int index) async {
     QuerySnapshot querySnapshot = await _collectionRef.get();
     return querySnapshot.docs[index].id;
@@ -87,11 +88,7 @@ class _pelanggan_cruState extends State<pelanggan_cru> {
                 initialData: {},
                 future: getdata(),
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                  
-                  if (!snapshot.hasData ||
-                      snapshot.data == null ||
-                      snapshot.data.isEmpty ||
-                      snapshot.hasError) {
+                  if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
                     if (snapshot.data == {}) {
                       return Container();
                     } else {
@@ -126,8 +123,8 @@ class _pelanggan_cruState extends State<pelanggan_cru> {
                           ),
                           CustomTextField(
                             text_controller: nama_belakang,
-                            hintText: "Nama depan pelanggan",
-                            title: "Nama depan pelanggan",
+                            hintText: "Nama belakang pelanggan",
+                            title: "Nama belakang pelanggan",
                           ),
                           CustomTextField(
                             text_controller: alamat,
@@ -157,29 +154,28 @@ class _pelanggan_cruState extends State<pelanggan_cru> {
               onPressed: () async {
                 Map<String, String> body;
                 int count = await FirebaseFirestore.instance.collection('Pelanggan').get().then((value) => value.size);
-               
 
                 if (title == "Tambah") {
-                body = {  
-                  'alamat': alamat.text.toString(),
-                  'email': email.text.toString(),
-                  'id': count.toString(),
-                  'nama_belakang': nama_belakang.text.toString(),
-                  "nama_depan": nama_depan.text.toString(),
-                  'telepon': telepon.text.toString(),
-                };
+                  body = {
+                    'alamat': alamat.text.toString(),
+                    'email': email.text.toString(),
+                    'id': count.toString(),
+                    'nama_belakang': nama_belakang.text.toString(),
+                    "nama_depan": nama_depan.text.toString(),
+                    'telepon': telepon.text.toString(),
+                  };
                   FirebaseFirestore.instance.collection("Pelanggan").add(body);
                   Fluttertoast.showToast(msg: "Sukses insert");
                 } else {
                   var id = await getId(widget.index);
-                  body = {  
-                  'alamat': alamat.text.toString(),
-                  'email': email.text.toString(),
-                  'id': idtemp.toString(),
-                  'nama_belakang': nama_belakang.text.toString(),
-                  "nama_depan": nama_depan.text.toString(),
-                  'telepon': telepon.text.toString(),
-                };
+                  body = {
+                    'alamat': alamat.text.toString(),
+                    'email': email.text.toString(),
+                    'id': idtemp.toString(),
+                    'nama_belakang': nama_belakang.text.toString(),
+                    "nama_depan": nama_depan.text.toString(),
+                    'telepon': telepon.text.toString(),
+                  };
                   await _collectionRef.doc(id).update(body);
                   Fluttertoast.showToast(msg: "Sukses update");
                 }
@@ -195,4 +191,3 @@ class _pelanggan_cruState extends State<pelanggan_cru> {
     );
   }
 }
-

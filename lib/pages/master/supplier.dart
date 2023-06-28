@@ -15,9 +15,8 @@ class supplier extends StatefulWidget {
 }
 
 class _supplierState extends State<supplier> {
-  var count = 0;
-  CollectionReference _collectionRef =
-      FirebaseFirestore.instance.collection('Supplier');
+  var loaded = false;
+  CollectionReference _collectionRef = FirebaseFirestore.instance.collection('Supplier');
 
   getdata() async {
     QuerySnapshot querySnapshot = await _collectionRef.get();
@@ -66,8 +65,7 @@ class _supplierState extends State<supplier> {
                   elevation: 0.1,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
-                    side: const BorderSide(
-                        color: colors.inputBorderPrimary, width: 1),
+                    side: const BorderSide(color: colors.inputBorderPrimary, width: 1),
                   ),
                   shadowColor: colors.boxShadow,
                   child: TextField(
@@ -85,14 +83,11 @@ class _supplierState extends State<supplier> {
                 initialData: [],
                 future: getdata(), // Run check for a single queryRow
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                  if (!snapshot.hasData ||
-                      snapshot.data == null ||
-                      snapshot.data.isEmpty ||
-                      snapshot.hasError) {
-                    if (count > 0) {
-                      count = 0;
+                  if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
+                    if (loaded) {
                       return Container();
                     } else {
+                      loaded = true;
                       return Container(
                         height: MediaQuery.of(context).size.height - 200,
                         child: Center(
@@ -108,19 +103,14 @@ class _supplierState extends State<supplier> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
-                          var name =
-                              snapshot.data[index]["nama_supplier"].toString();
-                          var id = int.parse(
-                              snapshot.data[index]["kode"].toString());
-                          var ava =
-                              name.toString().substring(0, 1).toUpperCase();
+                          var name = snapshot.data[index]["nama_supplier"].toString();
+                          var ava = name.toString().substring(0, 1).toUpperCase();
                           return GestureDetector(
                             onTap: () async {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      supplier_detail(index: index),
+                                  builder: (context) => supplier_detail(index: index),
                                 ),
                               );
                             },
@@ -129,8 +119,7 @@ class _supplierState extends State<supplier> {
                                 CircleAvatar(
                                   child: Text(
                                     ava,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w500),
+                                    style: TextStyle(fontWeight: FontWeight.w500),
                                   ),
                                   radius: 20,
                                   backgroundColor: colors.primaryLightest,

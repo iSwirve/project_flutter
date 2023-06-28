@@ -19,13 +19,11 @@ class supplier_cru extends StatefulWidget {
 
 class _supplier_cruState extends State<supplier_cru> {
   TextEditingController nama = TextEditingController();
-  TextEditingController kode = TextEditingController();
   TextEditingController telpon = TextEditingController();
   TextEditingController alamat = TextEditingController();
   var title = "Tambah";
 
-  CollectionReference _supplier =
-      FirebaseFirestore.instance.collection('Supplier');
+  CollectionReference _supplier = FirebaseFirestore.instance.collection('Supplier');
   getdata() async {
     QuerySnapshot querySnapshot = await _supplier.get();
     final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
@@ -81,10 +79,7 @@ class _supplier_cruState extends State<supplier_cru> {
                 future: getdata(),
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
                   if (title == "Edit") {
-                    if (!snapshot.hasData ||
-                        snapshot.data == null ||
-                        snapshot.data.isEmpty ||
-                        snapshot.hasError) {
+                    if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
                       if (snapshot.data == {}) {
                         return Container();
                       } else {
@@ -96,9 +91,7 @@ class _supplier_cruState extends State<supplier_cru> {
                         );
                       }
                     } else {
-                      nama.text =
-                          snapshot.data[widget.index]["nama_supplier"] ?? '';
-                      kode.text = snapshot.data[widget.index]["kode"] ?? '';
+                      nama.text = snapshot.data[widget.index]["nama_supplier"] ?? '';
                       telpon.text = snapshot.data[widget.index]["telpon"] ?? '';
                       alamat.text = snapshot.data[widget.index]["alamat"] ?? '';
                     }
@@ -110,11 +103,6 @@ class _supplier_cruState extends State<supplier_cru> {
                         text_controller: nama,
                         hintText: "Nama Supplier",
                         title: "Nama Supplier",
-                      ),
-                      CustomTextField(
-                        text_controller: kode,
-                        hintText: "Kode",
-                        title: "Kode",
                       ),
                       CustomTextField(
                         text_controller: telpon,
@@ -135,13 +123,11 @@ class _supplier_cruState extends State<supplier_cru> {
               text: title,
               onPressed: () async {
                 Map<String, String> body = {
-                  "kode": kode.text.toString(),
                   "nama_supplier": nama.text.toString(),
                   "alamat": alamat.text.toString(),
                   "telpon": telpon.text.toString(),
                 };
                 if (title == "Tambah") {
-                  //function
                   FirebaseFirestore.instance.collection('Supplier').add(body);
                   Fluttertoast.showToast(msg: "Success Insert");
                 } else {

@@ -129,7 +129,6 @@ class _barang_detailState extends State<barang_detail> {
   }
 
   var brandIDku;
-
   Future<void> getdata2(String brandID) async {
     var collection = FirebaseFirestore.instance.collection('Brand');
     var docSnapshot = await collection.doc(brandID).get();
@@ -137,24 +136,17 @@ class _barang_detailState extends State<barang_detail> {
       Map<String, dynamic>? data = docSnapshot.data();
       var value = data?['name']; // <-- The value you want to retrieve.
       brandIDku = value;
-      print(brandIDku);
     }
   }
 
-  final CollectionReference _brand =
-      FirebaseFirestore.instance.collection('Brand');
-
-  final CollectionReference _barang =
-      FirebaseFirestore.instance.collection('Barang');
-
-  final CollectionReference _kategori =
-      FirebaseFirestore.instance.collection('Kategori');
+  final CollectionReference _brand = FirebaseFirestore.instance.collection('Brand');
+  final CollectionReference _barang = FirebaseFirestore.instance.collection('Barang');
+  final CollectionReference _kategori = FirebaseFirestore.instance.collection('Kategori');
   Map<dynamic, dynamic> brands = new Map();
   Map<dynamic, dynamic> kategoris = new Map();
 
   getdata() async {
     QuerySnapshot querySnapshot = await _barang.get();
-
     final datas = querySnapshot.docs.map((doc) => doc.data()).toList();
     QuerySnapshot qs = await _brand.get();
     final dataBrand = qs.docs.map((doc) => doc.data()).toList();
@@ -207,55 +199,25 @@ class _barang_detailState extends State<barang_detail> {
         initialData: [],
         future: getdata(),
         builder: (context, AsyncSnapshot<dynamic> snapshot) {
-          if (!snapshot.hasData ||
-              snapshot.data == null ||
-              snapshot.data.isEmpty ||
-              snapshot.hasError) {
-            if (count > 0) {
-              count = 0;
-              return Container();
-            } else {
-              return Container(
-                height: MediaQuery.of(context).size.height - 200,
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
+          if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
+            return Container(
+              height: MediaQuery.of(context).size.height - 200,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
           } else {
-            // print(snapshot.data.runtimeType);
-            var nama_barang =
-                snapshot.data[0][widget.index]["nama_barang"].toString();
-
-            var brand =
-                brands[snapshot.data[0][widget.index]["brand"].toString()];
-            // var brand2 = _brand.FirebaseFirestore;
-            // print(getdata2(brand));
-            // for (var i = 0; i < snapshot.data[1].length; i++) {
-            //   if(snapshot.data[1][i][""])
-            // }
-            var kategori_barang = kategoris[
-                snapshot.data[0][widget.index]["kategori_barang"].toString()];
-            // print(snapshot.data[1].docs[0].reference.id);
-            var kode_barang =
-                snapshot.data[0][widget.index]["kode_barang"].toString();
-            var kode_supplier =
-                snapshot.data[0][widget.index]["kode_supplier"].toString();
-
-            var harga_beli =
-                snapshot.data[0][widget.index]["harga_beli"].toString();
-            var harga_jual =
-                snapshot.data[0][widget.index]["harga_jual"].toString();
-            var stok_minimum =
-                snapshot.data[0][widget.index]["stok_minimum"].toString();
-            var keterangan =
-                snapshot.data[0][widget.index]["keterangan"].toString();
+            var nama_barang = snapshot.data[0][widget.index]["nama_barang"].toString();
+            var brand = brands[snapshot.data[0][widget.index]["brand"].toString()];
+            var kategori_barang = kategoris[snapshot.data[0][widget.index]["kategori_barang"].toString()];
+            var kode_supplier = snapshot.data[0][widget.index]["kode_supplier"].toString();
+            var harga_beli = snapshot.data[0][widget.index]["harga_beli"].toString();
+            var harga_jual = snapshot.data[0][widget.index]["harga_jual"].toString();
+            var stok_minimum = snapshot.data[0][widget.index]["stok_minimum"].toString();
+            var keterangan = snapshot.data[0][widget.index]["keterangan"].toString();
 
             return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-              stream: FirebaseFirestore.instance
-                  .collection('Supplier')
-                  .doc('$kode_supplier')
-                  .snapshots(),
+              stream: FirebaseFirestore.instance.collection('Supplier').doc('$kode_supplier').snapshots(),
               builder: (context, snap) {
                 var data = snap.data?.data();
                 var nama_supplier = data?["nama_supplier"];
@@ -264,16 +226,6 @@ class _barang_detailState extends State<barang_detail> {
                     margin: EdgeInsets.only(top: 10, left: 20),
                     child: Column(
                       children: [
-                        CustomText(
-                          text: "Kode Barang : $kode_barang",
-                          textStyle: TextStyle(fontSize: 12),
-                          sizedBox: SizedBox(height: 5),
-                        ),
-                        CustomText(
-                          text: "Nama Barang : $nama_barang",
-                          textStyle: TextStyle(fontSize: 12),
-                          sizedBox: SizedBox(height: 5),
-                        ),
                         CustomText(
                           text: "Kategori Barang : $kategori_barang",
                           textStyle: TextStyle(fontSize: 12),
@@ -323,15 +275,16 @@ class _barang_detailState extends State<barang_detail> {
         blurSize: 5.0,
         menuItemExtent: 50,
         menuBoxDecoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.all(Radius.circular(15.0))),
+          color: Colors.transparent,
+          borderRadius: BorderRadius.all(
+            Radius.circular(15.0),
+          ),
+        ),
         duration: Duration(milliseconds: 100),
         animateMenuItems: true,
         blurBackgroundColor: Color.fromARGB(127, 29, 41, 57),
         openWithTap: true,
-        // Open Focused-Menu on Tap rather than Long Press
         menuOffset: 10.0,
-        // Offset value to show menuItem from the selected item
         bottomOffsetHeight: 80.0,
         menuItems: <FocusedMenuItem>[
           FocusedMenuItem(
@@ -339,8 +292,7 @@ class _barang_detailState extends State<barang_detail> {
             title: Row(
               children: [
                 Container(
-                  padding:
-                      EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
+                  padding: EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: Colors.white,
@@ -376,8 +328,7 @@ class _barang_detailState extends State<barang_detail> {
             title: Row(
               children: [
                 Container(
-                  padding:
-                      EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
+                  padding: EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: Colors.white,

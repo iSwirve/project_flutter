@@ -23,8 +23,7 @@ class stok_detail extends StatefulWidget {
 }
 
 class _stok_detailState extends State<stok_detail> {
-  final CollectionReference _stok =
-      FirebaseFirestore.instance.collection('Stok');
+  final CollectionReference _stok = FirebaseFirestore.instance.collection('Stok');
 
   Future<void> _delete(String productId) async {
     await _stok.doc(productId).delete();
@@ -168,10 +167,7 @@ class _stok_detailState extends State<stok_detail> {
         initialData: [],
         future: getdata(),
         builder: (context, AsyncSnapshot<dynamic> snapshot) {
-          if (!snapshot.hasData ||
-              snapshot.data == null ||
-              snapshot.data.isEmpty ||
-              snapshot.hasError) {
+          if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
             return Container(
               height: MediaQuery.of(context).size.height - 200,
               child: Center(
@@ -181,13 +177,9 @@ class _stok_detailState extends State<stok_detail> {
           } else {
             var idBarang = snapshot.data[widget.index]["id_barang"].toString();
             var stok_baik = snapshot.data[widget.index]["stok_baik"].toString();
-            var stok_rusak =
-                snapshot.data[widget.index]["stok_rusak"].toString();
+            var stok_rusak = snapshot.data[widget.index]["stok_rusak"].toString();
             return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-              stream: FirebaseFirestore.instance
-                  .collection('Barang')
-                  .doc('$idBarang')
-                  .snapshots(),
+              stream: FirebaseFirestore.instance.collection('Barang').doc('$idBarang').snapshots(),
               builder: (context, snap) {
                 var data = snap.data?.data();
                 var nama_barang = data?["nama_barang"].toString();
@@ -197,11 +189,6 @@ class _stok_detailState extends State<stok_detail> {
                     margin: EdgeInsets.only(top: 10, left: 20),
                     child: Column(
                       children: [
-                        CustomText(
-                          text: "Kode Barang : $kode_barang",
-                          textStyle: TextStyle(fontSize: 12),
-                          sizedBox: SizedBox(height: 5),
-                        ),
                         CustomText(
                           text: "Nama Barang : $nama_barang",
                           textStyle: TextStyle(fontSize: 12),
@@ -230,15 +217,13 @@ class _stok_detailState extends State<stok_detail> {
         menuWidth: 135,
         blurSize: 5.0,
         menuItemExtent: 50,
-        menuBoxDecoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.all(Radius.circular(15.0))),
+        menuBoxDecoration:
+            BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.all(Radius.circular(15.0))),
         duration: Duration(milliseconds: 100),
         animateMenuItems: true,
         blurBackgroundColor: Color.fromARGB(127, 29, 41, 57),
         openWithTap: true, // Open Focused-Menu on Tap rather than Long Press
-        menuOffset:
-            10.0, // Offset value to show menuItem from the selected item
+        menuOffset: 10.0, // Offset value to show menuItem from the selected item
         bottomOffsetHeight: 80.0,
         menuItems: <FocusedMenuItem>[
           FocusedMenuItem(
@@ -246,8 +231,7 @@ class _stok_detailState extends State<stok_detail> {
             title: Row(
               children: [
                 Container(
-                  padding:
-                      EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
+                  padding: EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: Colors.white,
@@ -283,8 +267,7 @@ class _stok_detailState extends State<stok_detail> {
             title: Row(
               children: [
                 Container(
-                  padding:
-                      EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
+                  padding: EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: Colors.white,

@@ -22,6 +22,7 @@ class penjualan extends StatefulWidget {
 }
 
 class _penjualanState extends State<penjualan> {
+  var loaded = false;
   CollectionReference _collectionRef = FirebaseFirestore.instance.collection('Penjualan');
 
   getdata() async {
@@ -93,12 +94,17 @@ class _penjualanState extends State<penjualan> {
                 future: getdata(), // Run check for a single queryRow
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
                   if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
-                    return Container(
-                      height: MediaQuery.of(context).size.height - 200,
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
+                    if (loaded) {
+                      return Container();
+                    } else {
+                      loaded = true;
+                      return Container(
+                        height: MediaQuery.of(context).size.height - 200,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
                   } else {
                     return Expanded(
                       child: ListView.builder(

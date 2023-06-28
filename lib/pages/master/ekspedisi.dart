@@ -13,18 +13,19 @@ class ekspedisi extends StatefulWidget {
 }
 
 class _ekspedisiState extends State<ekspedisi> {
-    final CollectionReference _ekspedisi =
-      FirebaseFirestore.instance.collection('Ekspedisi');
-  int count = 0;
+  final CollectionReference _ekspedisi = FirebaseFirestore.instance.collection('Ekspedisi');
+  var loaded = false;
   getdata() async {
     QuerySnapshot querySnapshot = await _ekspedisi.get();
     final data = querySnapshot.docs.map((doc) => doc.data()).toList();
     return data;
   }
+
   getId(int index) async {
     QuerySnapshot querySnapshot = await _ekspedisi.get();
     return querySnapshot.docs[index].id;
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -68,8 +69,7 @@ class _ekspedisiState extends State<ekspedisi> {
                   elevation: 0.1,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
-                    side: const BorderSide(
-                        color: Color.fromARGB(255, 208, 213, 221), width: 1),
+                    side: const BorderSide(color: Color.fromARGB(255, 208, 213, 221), width: 1),
                   ),
                   shadowColor: Color.fromARGB(255, 102, 112, 133),
                   child: TextField(
@@ -87,14 +87,11 @@ class _ekspedisiState extends State<ekspedisi> {
                 initialData: [],
                 future: getdata(), // Run check for a single queryRow
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                  if (!snapshot.hasData ||
-                      snapshot.data == null ||
-                      snapshot.data.isEmpty ||
-                      snapshot.hasError) {
-                    if (count > 0) {
-                      count = 0;
+                  if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
+                    if (loaded) {
                       return Container();
                     } else {
+                      loaded = true;
                       return Container(
                         height: MediaQuery.of(context).size.height - 200,
                         child: Center(
@@ -117,8 +114,7 @@ class _ekspedisiState extends State<ekspedisi> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      ekspedisi_detail(index: index),
+                                  builder: (context) => ekspedisi_detail(index: index),
                                 ),
                               );
                             },

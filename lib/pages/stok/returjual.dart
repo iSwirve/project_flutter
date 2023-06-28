@@ -16,7 +16,7 @@ class returjual extends StatefulWidget {
 }
 
 class _returjualState extends State<returjual> {
-  var count = 0;
+  var loaded = false;
   CollectionReference _retur = FirebaseFirestore.instance.collection('log_return_buyer');
   CollectionReference _pelanggan = FirebaseFirestore.instance.collection('Pelanggan');
 
@@ -102,21 +102,18 @@ class _returjualState extends State<returjual> {
               initialData: [],
               future: getdata(), // Run check for a single queryRow
               builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                if (!snapshot.hasData ||
-                    snapshot.data == null ||
-                    snapshot.data.isEmpty ||
-                    snapshot.hasError) {
-                  if (count > 0) {
-                    count = 0;
-                    return Container();
-                  } else {
-                    return Container(
-                      height: MediaQuery.of(context).size.height - 200,
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }
+                if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
+                  if (loaded) {
+                      return Container();
+                    } else {
+                      loaded = true;
+                      return Container(
+                        height: MediaQuery.of(context).size.height - 200,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
                 } else {
                   return Expanded(
                     child: ListView.builder(
@@ -148,8 +145,7 @@ class _returjualState extends State<returjual> {
                                   ),
                                 ),
                                 radius: 20,
-                                backgroundColor:
-                                Color.fromARGB(255, 239, 248, 255),
+                                backgroundColor: Color.fromARGB(255, 239, 248, 255),
                               ),
                               Container(
                                 height: 56,

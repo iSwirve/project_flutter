@@ -21,19 +21,12 @@ class memo_detail extends StatefulWidget {
 }
 
 class _memo_detailState extends State<memo_detail> {
-    int count = 0;
-    final CollectionReference _memo =
-      FirebaseFirestore.instance.collection('Memo');
+  int count = 0;
+  final CollectionReference _memo = FirebaseFirestore.instance.collection('Memo');
 
-  final CollectionReference _barang =
-      FirebaseFirestore.instance.collection('Barang');
-
-
-
-
+  final CollectionReference _barang = FirebaseFirestore.instance.collection('Barang');
 
   getdata() async {
-
     QuerySnapshot qs = await _memo.get();
     final dataMemo = qs.docs.map((doc) => doc.data()).toList();
     return dataMemo;
@@ -67,10 +60,7 @@ class _memo_detailState extends State<memo_detail> {
         initialData: [],
         future: getdata(),
         builder: (context, AsyncSnapshot<dynamic> snapshot) {
-          if (!snapshot.hasData ||
-              snapshot.data == null ||
-              snapshot.data.isEmpty ||
-              snapshot.hasError) {
+          if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
             if (count > 0) {
               count = 0;
               return Container();
@@ -83,52 +73,46 @@ class _memo_detailState extends State<memo_detail> {
               );
             }
           } else {
-            // print(snapshot.data.runtimeType);
-            var judul_memo =
-                snapshot.data[widget.index]["judul_memo"].toString();
-            var nama_barang =
-                snapshot.data[widget.index]["id_barang"].toString();
+            var judul_memo = snapshot.data[widget.index]["judul_memo"].toString();
+            var nama_barang = snapshot.data[widget.index]["id_barang"].toString();
             var catatan = snapshot.data[widget.index]["catatan"].toString();
-            var qty =
-                snapshot.data[widget.index]["qty"].toString();
+            var qty = snapshot.data[widget.index]["qty"].toString();
 
             return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-            stream:FirebaseFirestore.instance.collection('Barang').doc('$nama_barang').snapshots(),
-            builder: (context,sp){
-              var data = sp.data?.data();
-              var temp = data?["nama_barang"].toString();
-            return SingleChildScrollView(
-              child: Container(
-                margin: EdgeInsets.only(top: 10, left: 20),
-                child: Column(
-                  children: [
-                    CustomText(
-                      text: "Judul Memo : $judul_memo",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
+              stream: FirebaseFirestore.instance.collection('Barang').doc('$nama_barang').snapshots(),
+              builder: (context, sp) {
+                var data = sp.data?.data();
+                var temp = data?["nama_barang"].toString();
+                return SingleChildScrollView(
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10, left: 20),
+                    child: Column(
+                      children: [
+                        CustomText(
+                          text: "Judul Memo : $judul_memo",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                        CustomText(
+                          text: "Nama Barang : $temp",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                        CustomText(
+                          text: "Catatan Memo : $catatan",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                        CustomText(
+                          text: "Kuantiti : $qty",
+                          textStyle: TextStyle(fontSize: 12),
+                          sizedBox: SizedBox(height: 5),
+                        ),
+                      ],
                     ),
-                    CustomText(
-                      text: "Nama Barang : $temp",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-                    CustomText(
-                      text: "Catatan Memo : $catatan",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-
-                    CustomText(
-                      text: "Kuantiti : $qty",
-                      textStyle: TextStyle(fontSize: 12),
-                      sizedBox: SizedBox(height: 5),
-                    ),
-
-                  ],
-                ),
-              ),
-            );
-            },
+                  ),
+                );
+              },
             );
           }
         },
@@ -136,4 +120,4 @@ class _memo_detailState extends State<memo_detail> {
       backgroundColor: Colors.white,
     );
   }
-  }
+}

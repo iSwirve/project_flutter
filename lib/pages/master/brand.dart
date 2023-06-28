@@ -14,14 +14,11 @@ class brand extends StatefulWidget {
 }
 
 class _brandState extends State<brand> {
-  var count = 0;
+  var loaded = false;
   CollectionReference _collectionRef = FirebaseFirestore.instance.collection('Brand');
   getdata() async {
     QuerySnapshot querySnapshot = await _collectionRef.get();
     final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
-    // print(allData);
-    // print(querySnapshot.docs[0].id);
-
     return allData;
   }
 
@@ -87,14 +84,11 @@ class _brandState extends State<brand> {
               initialData: [],
               future: getdata(), // Run check for a single queryRow
               builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                if (!snapshot.hasData ||
-                    snapshot.data == null ||
-                    snapshot.data.isEmpty ||
-                    snapshot.hasError) {
-                  if (count > 0) {
-                    count = 0;
+                if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
+                  if (loaded) {
                     return Container();
                   } else {
+                    loaded = true;
                     return Container(
                       height: MediaQuery.of(context).size.height - 200,
                       child: Center(
@@ -133,8 +127,7 @@ class _brandState extends State<brand> {
                                   ),
                                 ),
                                 radius: 20,
-                                backgroundColor:
-                                    Color.fromARGB(255, 239, 248, 255),
+                                backgroundColor: Color.fromARGB(255, 239, 248, 255),
                               ),
                               Container(
                                 height: 56,

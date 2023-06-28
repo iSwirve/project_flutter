@@ -24,7 +24,6 @@ class barang_cru extends StatefulWidget {
 
 class _barang_cruState extends State<barang_cru> {
   TextEditingController nama = TextEditingController();
-  TextEditingController kode = TextEditingController();
   SingleValueDropDownController? brand;
   SingleValueDropDownController? kategori_barang;
   SingleValueDropDownController? supplier;
@@ -38,14 +37,10 @@ class _barang_cruState extends State<barang_cru> {
   Map<dynamic, dynamic> SupplierData = {};
   var title = "Tambah";
 
-  CollectionReference _collectionRef =
-      FirebaseFirestore.instance.collection('Brand');
-  CollectionReference _collectionRef2 =
-      FirebaseFirestore.instance.collection('Kategori');
-  CollectionReference _collectionRef3 =
-      FirebaseFirestore.instance.collection('Barang');
-  CollectionReference _collectionRef4 =
-      FirebaseFirestore.instance.collection('Supplier');
+  CollectionReference _collectionRef = FirebaseFirestore.instance.collection('Brand');
+  CollectionReference _collectionRef2 = FirebaseFirestore.instance.collection('Kategori');
+  CollectionReference _collectionRef3 = FirebaseFirestore.instance.collection('Barang');
+  CollectionReference _collectionRef4 = FirebaseFirestore.instance.collection('Supplier');
 
   getdata() async {
     QuerySnapshot querySnapshot = await _collectionRef.get();
@@ -67,8 +62,7 @@ class _barang_cruState extends State<barang_cru> {
     });
     ctr = 0;
     querySnapshot4.docs.forEach((element) {
-      SupplierData[element.id] =
-          querySnapshot4.docs[ctr]["nama_supplier"].toString();
+      SupplierData[element.id] = querySnapshot4.docs[ctr]["nama_supplier"].toString();
       ctr++;
     });
 
@@ -124,10 +118,7 @@ class _barang_cruState extends State<barang_cru> {
                 initialData: {},
                 future: getdata(),
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                  if (!snapshot.hasData ||
-                      snapshot.data == null ||
-                      snapshot.data.isEmpty ||
-                      snapshot.hasError) {
+                  if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
                     if (snapshot.data == {}) {
                       return Container();
                     } else {
@@ -142,21 +133,11 @@ class _barang_cruState extends State<barang_cru> {
                     }
                   } else {
                     if (title == "Edit") {
-                      nama.text =
-                          snapshot.data[widget.index]["nama_barang"] ?? '-';
-                      kode.text =
-                          snapshot.data[widget.index]["kode_barang"] ?? '-';
-                      stok_minimum.text =
-                          (snapshot.data[widget.index]["stok_minimum"] ?? 0)
-                              .toString();
-                      harga_beli.text =
-                          (snapshot.data[widget.index]["harga_beli"] ?? 0)
-                              .toString();
-                      harga_jual.text =
-                          (snapshot.data[widget.index]["harga_jual"] ?? 0)
-                              .toString();
-                      keterangan.text =
-                          snapshot.data[widget.index]["keterangan"] ?? "-";
+                      nama.text = snapshot.data[widget.index]["nama_barang"] ?? '-';
+                      stok_minimum.text = (snapshot.data[widget.index]["stok_minimum"] ?? 0).toString();
+                      harga_beli.text = (snapshot.data[widget.index]["harga_beli"] ?? 0).toString();
+                      harga_jual.text = (snapshot.data[widget.index]["harga_jual"] ?? 0).toString();
+                      keterangan.text = snapshot.data[widget.index]["keterangan"] ?? "-";
                     }
                   }
                   return SingleChildScrollView(
@@ -164,11 +145,6 @@ class _barang_cruState extends State<barang_cru> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CustomTextField(
-                            text_controller: kode,
-                            hintText: "Kode",
-                            title: "Kode",
-                          ),
                           CustomTextField(
                             text_controller: nama,
                             hintText: "Nama",
@@ -187,8 +163,7 @@ class _barang_cruState extends State<barang_cru> {
                           CustomDropdown(
                             title: "Kategori Barang",
                             list: KategoriData,
-                            controller: kategori_barang =
-                                SingleValueDropDownController(
+                            controller: kategori_barang = SingleValueDropDownController(
                               data: DropDownValueModel(
                                 name: "Kategori Barang",
                                 value: "Kategori Barang",
@@ -198,8 +173,7 @@ class _barang_cruState extends State<barang_cru> {
                           CustomDropdown(
                             title: "Supplier",
                             list: SupplierData,
-                            controller: supplier =
-                                SingleValueDropDownController(
+                            controller: supplier = SingleValueDropDownController(
                               data: DropDownValueModel(
                                 name: "Supplier",
                                 value: "Supplier",
@@ -240,9 +214,7 @@ class _barang_cruState extends State<barang_cru> {
                 Map<String, String>? body;
                 body = {
                   'brand': brand!.dropDownValue!.value.toString(),
-                  'kategori_barang':
-                      kategori_barang!.dropDownValue!.value.toString(),
-                  'kode_barang': kode.text.toString(),
+                  'kategori_barang': kategori_barang!.dropDownValue!.value.toString(),
                   'nama_barang': nama.text.toString(),
                   'harga_beli': harga_beli.text.toString(),
                   'harga_jual': harga_jual.text.toString(),
@@ -253,8 +225,7 @@ class _barang_cruState extends State<barang_cru> {
 
                 if (title == "Tambah") {
                   if (nama.text.isEmpty)
-                    Fluttertoast.showToast(
-                        msg: "Nama barang tidak boleh kosong");
+                    Fluttertoast.showToast(msg: "Nama barang tidak boleh kosong");
                   else {
                     Fluttertoast.showToast(msg: "Sukses Insert");
                     await _collectionRef3.add(body);

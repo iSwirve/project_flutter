@@ -9,24 +9,23 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-
 class pembelian extends StatefulWidget {
   const pembelian({super.key});
   static const routeName = '/pembelian';
-
 
   @override
   State<pembelian> createState() => _pembelianState();
 }
 
 class _pembelianState extends State<pembelian> {
+  var loaded = false;
   CollectionReference _collectionPembelian = FirebaseFirestore.instance.collection('Pembelian');
-    getdata() async {
+  getdata() async {
     QuerySnapshot querySnapshot = await _collectionPembelian.get();
     final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
     return allData;
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,16 +83,18 @@ class _pembelianState extends State<pembelian> {
                 initialData: [],
                 future: getdata(), // Run check for a single queryRow
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                  if (!snapshot.hasData ||
-                      snapshot.data == null ||
-                      snapshot.data.isEmpty ||
-                      snapshot.hasError) {
-                    return Container(
-                      height: MediaQuery.of(context).size.height - 200,
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
+                  if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
+                    if (loaded) {
+                      return Container();
+                    } else {
+                      loaded = true;
+                      return Container(
+                        height: MediaQuery.of(context).size.height - 200,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
                   } else {
                     return Expanded(
                       child: ListView.builder(
@@ -102,28 +103,19 @@ class _pembelianState extends State<pembelian> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
-                          var idSupplier =
-                              snapshot.data[index]["id_supplier"].toString();
-                          return StreamBuilder<
-                              DocumentSnapshot<Map<String, dynamic>>>(
-                            stream: FirebaseFirestore.instance
-                                .collection('Supplier')
-                                .doc('$idSupplier')
-                                .snapshots(),
+                          var idSupplier = snapshot.data[index]["id_supplier"].toString();
+                          return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                            stream: FirebaseFirestore.instance.collection('Supplier').doc('$idSupplier').snapshots(),
                             builder: (context, snap) {
                               var data = snap.data?.data();
                               var nama_supplier = data?["nama_supplier"];
-                              var ava = nama_supplier
-                                  .toString()
-                                  .substring(0, 1)
-                                  .toUpperCase();
+                              var ava = nama_supplier.toString().substring(0, 1).toUpperCase();
                               return GestureDetector(
                                 onTap: () async {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          pembelian_detail(index: index),
+                                      builder: (context) => pembelian_detail(index: index),
                                     ),
                                   );
                                 },
@@ -150,8 +142,7 @@ class _pembelianState extends State<pembelian> {
                                           color: colors.textPrimary,
                                         ),
                                       ),
-                                      padding:
-                                          EdgeInsets.only(top: 18, left: 15),
+                                      padding: EdgeInsets.only(top: 18, left: 15),
                                     ),
                                   ],
                                 ),

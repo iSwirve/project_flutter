@@ -19,6 +19,7 @@ class memo extends StatefulWidget {
 }
 
 CollectionReference _collectionRef1 = FirebaseFirestore.instance.collection('Memo');
+var loaded = false;
 CollectionReference _collectionRef2 = FirebaseFirestore.instance.collection('Barang');
 
 class _memoState extends State<memo> {
@@ -86,12 +87,17 @@ class _memoState extends State<memo> {
                 future: getdata(), // Run check for a single queryRow
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
                   if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
-                    return Container(
-                      height: MediaQuery.of(context).size.height - 200,
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
+                    if (loaded) {
+                      return Container();
+                    } else {
+                      loaded = true;
+                      return Container(
+                        height: MediaQuery.of(context).size.height - 200,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
                   } else {
                     return Expanded(
                       child: ListView.builder(

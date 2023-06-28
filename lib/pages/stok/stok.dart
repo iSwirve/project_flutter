@@ -19,8 +19,8 @@ class stok extends StatefulWidget {
 }
 
 class _stokState extends State<stok> {
-  CollectionReference _collectionRef =
-      FirebaseFirestore.instance.collection('Stok');
+  var loaded = false;
+  CollectionReference _collectionRef = FirebaseFirestore.instance.collection('Stok');
   getdata() async {
     QuerySnapshot querySnapshot = await _collectionRef.get();
     final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
@@ -89,16 +89,18 @@ class _stokState extends State<stok> {
                 initialData: [],
                 future: getdata(), // Run check for a single queryRow
                 builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                  if (!snapshot.hasData ||
-                      snapshot.data == null ||
-                      snapshot.data.isEmpty ||
-                      snapshot.hasError) {
-                    return Container(
-                      height: MediaQuery.of(context).size.height - 200,
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
+                  if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty || snapshot.hasError) {
+                    if (loaded) {
+                      return Container();
+                    } else {
+                      loaded = true;
+                      return Container(
+                        height: MediaQuery.of(context).size.height - 200,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
                   } else {
                     return Expanded(
                       child: ListView.builder(
@@ -108,12 +110,8 @@ class _stokState extends State<stok> {
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
                           var idBarang = snapshot.data[index]["id_barang"].toString();
-                          return StreamBuilder<
-                              DocumentSnapshot<Map<String, dynamic>>>(
-                            stream: FirebaseFirestore.instance
-                                .collection('Barang')
-                                .doc('$idBarang')
-                                .snapshots(),
+                          return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                            stream: FirebaseFirestore.instance.collection('Barang').doc('$idBarang').snapshots(),
                             builder: (context, snap) {
                               var data = snap.data?.data();
                               var nama = data?["nama_barang"];
@@ -123,8 +121,7 @@ class _stokState extends State<stok> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                        stok_detail(index: index),
+                                      builder: (context) => stok_detail(index: index),
                                     ),
                                   );
                                 },
@@ -151,8 +148,7 @@ class _stokState extends State<stok> {
                                           color: colors.textPrimary,
                                         ),
                                       ),
-                                      padding:
-                                          EdgeInsets.only(top: 18, left: 15),
+                                      padding: EdgeInsets.only(top: 18, left: 15),
                                     ),
                                   ],
                                 ),
